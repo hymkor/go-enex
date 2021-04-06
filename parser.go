@@ -1,4 +1,4 @@
-package main
+package enex
 
 import (
 	"bytes"
@@ -38,7 +38,7 @@ type Enex struct {
 	Hash     map[string]*Resource
 }
 
-func ReadEnex(in io.Reader) (*Enex, error) {
+func Parse(in io.Reader) (*Enex, error) {
 	data, err := io.ReadAll(in)
 	if err != nil {
 		return nil, err
