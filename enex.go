@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/xml"
-	"fmt"
 	"io"
-	"os"
+	"net/url"
 	"strings"
 )
 
@@ -24,9 +23,19 @@ type _EnexXML struct {
 	Resource []*_EnexResource `xml:"note>resource"`
 }
 
+type Resource struct {
+	Data      []byte
+	Mime      string
+	SourceUrl string
+	Hash      string
+	Index     int
+	FileName  string
+}
+
 type Enex struct {
 	Content  string
-	Resource map[string][][]byte
+	Resource map[string][]*Resource
+	Hash     map[string]*Resource
 }
 
 func ReadEnex(in io.Reader) (*Enex, error) {
@@ -40,37 +49,34 @@ func ReadEnex(in io.Reader) (*Enex, error) {
 	if err != nil {
 		return nil, err
 	}
-	resource := make(map[string][][]byte)
-	for _, rsc := range xml1.Resource {
+	resource := make(map[string][]*Resource)
+	hash := make(map[string]*Resource)
+	for i, rsc := range xml1.Resource {
 		strReader := strings.NewReader(rsc.Data)
 		binReader := base64.NewDecoder(base64.StdEncoding, strReader)
 		var buffer bytes.Buffer
 		io.Copy(&buffer, binReader)
-		resource[rsc.FileName] = append(resource[rsc.FileName], buffer.Bytes())
-	}
-	return &Enex{Content: xml1.Content, Resource: resource}, nil
-}
 
-func mains() error {
-	enex, err := ReadEnex(os.Stdin)
-	if err != nil {
-		return err
-	}
-	for fname, bins := range enex.Resource {
-		for i, bin := range bins {
-			name := fname
-			if i > 0 {
-				name = fmt.Sprintf("%d-%s", i, fname)
-			}
-			os.WriteFile(name, bin, 0666)
+		r := &Resource{
+			Data:     buffer.Bytes(),
+			Mime:     strings.TrimSpace(rsc.Mime),
+			Index:    i,
+			FileName: rsc.FileName,
 		}
+		sourceUrl := strings.TrimSpace(rsc.SourceUrl)
+		if u, err := url.QueryUnescape(sourceUrl); err == nil {
+			r.SourceUrl = u
+			if field := strings.Fields(u); len(field) >= 4 {
+				r.Hash = field[2]
+				hash[field[2]] = r
+			}
+		}
+		resource[rsc.FileName] = append(resource[rsc.FileName], r)
 	}
-	return nil
-}
 
-func main() {
-	if err := mains(); err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
-	}
+	return &Enex{
+		Content:  strings.TrimSpace(xml1.Content),
+		Resource: resource,
+		Hash:     hash,
+	}, nil
 }
