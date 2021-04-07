@@ -2,6 +2,7 @@ package enex
 
 import (
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -52,7 +53,8 @@ func (enex *Enex) Html(prefix string) (string, map[string][]byte) {
 		if rsc, ok := enex.Hash[hash]; ok {
 			fname := prefix + renameWithNumber(rsc.FileName, rsc.Index)
 			resources[fname] = rsc.Data
-			return fmt.Sprintf(`<img src="%s" /><!-- hash="%s" -->`, fname, hash)
+			return fmt.Sprintf(`<img src="%s" /><!-- hash="%s" -->`,
+				url.QueryEscape(fname), hash)
 		} else {
 			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
 		}
