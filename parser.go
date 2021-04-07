@@ -38,20 +38,15 @@ type Enex struct {
 	Hash     map[string]*Resource
 }
 
-func Parse(in io.Reader) (*Enex, error) {
-	data, err := io.ReadAll(in)
-	if err != nil {
-		return nil, err
-	}
-
-	var xml1 _EnexXML
-	err = xml.Unmarshal(data, &xml1)
+func Parse(data []byte) (*Enex, error) {
+	var theXml _EnexXML
+	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
 		return nil, err
 	}
 	resource := make(map[string][]*Resource)
 	hash := make(map[string]*Resource)
-	for i, rsc := range xml1.Resource {
+	for i, rsc := range theXml.Resource {
 		strReader := strings.NewReader(rsc.Data)
 		binReader := base64.NewDecoder(base64.StdEncoding, strReader)
 		var buffer bytes.Buffer
@@ -75,7 +70,7 @@ func Parse(in io.Reader) (*Enex, error) {
 	}
 
 	return &Enex{
-		Content:  strings.TrimSpace(xml1.Content),
+		Content:  strings.TrimSpace(theXml.Content),
 		Resource: resource,
 		Hash:     hash,
 	}, nil

@@ -9,7 +9,11 @@ import (
 )
 
 func mains() error {
-	en, err := enex.Parse(os.Stdin)
+	data, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		return err
+	}
+	en, err := enex.Parse(data)
 	if err != nil {
 		return err
 	}
