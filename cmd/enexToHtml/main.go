@@ -14,6 +14,8 @@ import (
 
 var optionMarkdown = flag.Bool("markdown", false, "output markdown")
 
+var optionPrefix = flag.String("prefix", "", "prefix for attachement")
+
 func mains(args []string) error {
 	var data []byte
 	var err error
@@ -43,7 +45,11 @@ func mains(args []string) error {
 		}
 		defer fd.Close()
 		output = fd
-		baseName = baseName + "-"
+		if *optionPrefix != "" {
+			baseName = *optionPrefix
+		} else {
+			baseName = baseName + "-"
+		}
 	}
 	en, err := enex.Parse(data)
 	if err != nil {
