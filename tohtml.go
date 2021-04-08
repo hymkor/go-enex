@@ -38,7 +38,11 @@ func renameWithNumber(fname string, n int) string {
 	return fmt.Sprintf("%s_%d%s", base, n, ext)
 }
 
-func (enex *Enex) Html(prefix string) (string, map[string][]byte) {
+var rxLiDiv = regexp.MustCompile(`<li><div>([^<>]*)</div></li>`)
+
+var rxBrSomething = regexp.MustCompile(`<br />(<(?:(?:div)|(?:ol)|(?:ul)))`)
+
+func (enex *Export) Html(prefix string) (string, map[string][]byte) {
 	resources := map[string][]byte{}
 	c := enex.Content
 	c = rxXml.ReplaceAllString(c, "")
@@ -46,15 +50,15 @@ func (enex *Enex) Html(prefix string) (string, map[string][]byte) {
 	c = strings.ReplaceAll(c, "<en-note>",
 		"<html><head><meta charset=\"utf-8\"></head><body>\n")
 	c = strings.ReplaceAll(c, "</en-note>", "</body></html>\n")
-	c = strings.ReplaceAll(c, "</div>", "</div>\n")
-	c = strings.ReplaceAll(c, "</ul>", "</ul>\n")
-	c = strings.ReplaceAll(c, "</li>", "</li>\n")
+	c = strings.ReplaceAll(c, "<div><br /></div>", "<br />")
+	c = rxLiDiv.ReplaceAllString(c, `<li>${1}</li>`)
+	c = rxBrSomething.ReplaceAllString(c, `${1}`)
+
 	c = convMediaTag(c, func(hash string) string {
 		if rsc, ok := enex.Hash[hash]; ok {
-			fname := prefix + renameWithNumber(rsc.FileName, rsc.Index)
+			fname := prefix + renameWithNumber(rsc.FileName, rsc.index)
 			resources[fname] = rsc.Data
-			return fmt.Sprintf(`<img src="%s" /><!-- hash="%s" -->`,
-				url.QueryEscape(fname), hash)
+			return fmt.Sprintf(`<img alt="%[1]s" src="%[1]s" />`, url.QueryEscape(fname))
 		} else {
 			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
 		}

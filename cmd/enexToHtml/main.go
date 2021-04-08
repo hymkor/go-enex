@@ -57,7 +57,9 @@ func mains(args []string) error {
 	}
 	html, attachment := en.Html(baseName)
 	if *optionMarkdown {
-		godown.Convert(output, strings.NewReader(html), &godown.Option{})
+		var markdown strings.Builder
+		godown.Convert(&markdown, strings.NewReader(html), &godown.Option{})
+		enex.ShrinkMarkdown(strings.NewReader(markdown.String()), output)
 	} else {
 		io.WriteString(output, html)
 	}

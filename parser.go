@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type _EnexResource struct {
+type xmlResource struct {
 	XMLName   xml.Name `xml:"resource"`
 	Data      string   `xml:"data"`
 	Mime      string   `xml:"mime"`
@@ -17,10 +17,10 @@ type _EnexResource struct {
 	SourceUrl string   `xml:"resource-attributes>source-url"`
 }
 
-type _EnexXML struct {
-	XMLName  xml.Name         `xml:"en-export"`
-	Content  string           `xml:"note>content"`
-	Resource []*_EnexResource `xml:"note>resource"`
+type xmlEnExport struct {
+	XMLName  xml.Name       `xml:"en-export"`
+	Content  string         `xml:"note>content"`
+	Resource []*xmlResource `xml:"note>resource"`
 }
 
 type Resource struct {
@@ -28,18 +28,18 @@ type Resource struct {
 	Mime      string
 	SourceUrl string
 	Hash      string
-	Index     int
+	index     int
 	FileName  string
 }
 
-type Enex struct {
+type Export struct {
 	Content  string
-	Resource map[string][]*Resource
-	Hash     map[string]*Resource
+	Resource map[string][]*Resource // filename to the multi resources
+	Hash     map[string]*Resource   // hash to the one resource
 }
 
-func Parse(data []byte) (*Enex, error) {
-	var theXml _EnexXML
+func Parse(data []byte) (*Export, error) {
+	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func Parse(data []byte) (*Enex, error) {
 		r := &Resource{
 			Data:     buffer.Bytes(),
 			Mime:     strings.TrimSpace(rsc.Mime),
-			Index:    i,
+			index:    i,
 			FileName: rsc.FileName,
 		}
 		sourceUrl := strings.TrimSpace(rsc.SourceUrl)
@@ -69,7 +69,7 @@ func Parse(data []byte) (*Enex, error) {
 		resource[rsc.FileName] = append(resource[rsc.FileName], r)
 	}
 
-	return &Enex{
+	return &Export{
 		Content:  strings.TrimSpace(theXml.Content),
 		Resource: resource,
 		Hash:     hash,
