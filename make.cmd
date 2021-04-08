@@ -11,7 +11,7 @@ exit /b
     exit /b
 
 :"clean"
-    del *.png *.html *.md
+    del *.png *.html
     exit /b
 
 :"html"
