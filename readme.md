@@ -5,8 +5,6 @@ Library for Go
 --------------
 
 ```go
-// +build ignore
-
 package main
 
 import (
@@ -22,14 +20,14 @@ func mains() error {
     if err != nil {
         return err
     }
-    en, err := enex.Parse(data)
+    export, err := enex.Parse(data)
     if err != nil {
         return err
     }
-    html, attachment := en.Html("attachment-")
-    io.WriteString(os.Stdout, html)
+    html, images := export.Html("images-")
+    fmt.Println(html)
 
-    for fname, data := range attachment {
+    for fname, data := range images {
         fmt.Fprintf(os.Stderr, "Create File: %s (%d bytes)\n", fname, len(data))
         os.WriteFile(fname, data, 0666)
     }
@@ -45,13 +43,12 @@ func main() {
 
 ```
 $ go run example.go < sample.enex > sample.html
-Create File: attachment-image_1.png (21957 bytes)
-Create File: attachment-image_7.png (17981 bytes)
-Create File: attachment-image_14.png (56557 bytes)
-Create File: attachment-image_13.png (52293 bytes)
-Create File: attachment-image.png (37202 bytes)
-Create File: attachment-image_5.png (27353 bytes)
-Create File: attachment-image_6.png (57539 bytes)
+Create File: images-image_19.png (7232 bytes)
+Create File: images-image_21.png (3633 bytes)
+Create File: images-image_4.png (50815 bytes)
+Create File: images-image_9.png (54726 bytes)
+Create File: images-image_11.png (52430 bytes)
+Create File: images-image_13.png (52293 bytes)
 ```
 
 Executable
