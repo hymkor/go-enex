@@ -42,26 +42,26 @@ var rxLiDiv = regexp.MustCompile(`<li><div>([^<>]*)</div></li>`)
 
 var rxBrSomething = regexp.MustCompile(`<br />(<(?:(?:div)|(?:ol)|(?:ul)))`)
 
-func (enex *Export) Html(prefix string) (string, map[string][]byte) {
-	resources := map[string][]byte{}
-	c := enex.Content
-	c = rxXml.ReplaceAllString(c, "")
-	c = rxDocType.ReplaceAllString(c, "<!DOCTYPE html>")
-	c = strings.ReplaceAll(c, "<en-note>",
+func (exp *Export) Html(imagePathHeader string) (html string, images map[string][]byte) {
+	images = map[string][]byte{}
+	html = exp.Content
+	html = rxXml.ReplaceAllString(html, "")
+	html = rxDocType.ReplaceAllString(html, "<!DOCTYPE html>")
+	html = strings.ReplaceAll(html, "<en-note>",
 		"<html><head><meta charset=\"utf-8\"></head><body>\n")
-	c = strings.ReplaceAll(c, "</en-note>", "</body></html>\n")
-	c = strings.ReplaceAll(c, "<div><br /></div>", "<br />")
-	c = rxLiDiv.ReplaceAllString(c, `<li>${1}</li>`)
-	c = rxBrSomething.ReplaceAllString(c, `${1}`)
+	html = strings.ReplaceAll(html, "</en-note>", "</body></html>\n")
+	html = strings.ReplaceAll(html, "<div><br /></div>", "<br />")
+	html = rxLiDiv.ReplaceAllString(html, `<li>${1}</li>`)
+	html = rxBrSomething.ReplaceAllString(html, `${1}`)
 
-	c = convMediaTag(c, func(hash string) string {
-		if rsc, ok := enex.Hash[hash]; ok {
-			fname := prefix + renameWithNumber(rsc.FileName, rsc.index)
-			resources[fname] = rsc.Data
+	html = convMediaTag(html, func(hash string) string {
+		if rsc, ok := exp.Hash[hash]; ok {
+			fname := imagePathHeader + renameWithNumber(rsc.FileName, rsc.index)
+			images[fname] = rsc.Data
 			return fmt.Sprintf(`<img alt="%[1]s" src="%[1]s" />`, url.QueryEscape(fname))
 		} else {
 			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
 		}
 	})
-	return c, resources
+	return html, images
 }

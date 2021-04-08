@@ -15,14 +15,14 @@ func mains() error {
 	if err != nil {
 		return err
 	}
-	en, err := enex.Parse(data)
+	export, err := enex.Parse(data)
 	if err != nil {
 		return err
 	}
-	html, attachment := en.Html("attachment-")
-	io.WriteString(os.Stdout, html)
+	html, images := export.Html("images-")
+	fmt.Println(html)
 
-	for fname, data := range attachment {
+	for fname, data := range images {
 		fmt.Fprintf(os.Stderr, "Create File: %s (%d bytes)\n", fname, len(data))
 		os.WriteFile(fname, data, 0666)
 	}
