@@ -1,4 +1,4 @@
-go-enex - evernote's export data to HTML converter
+go-enex - Convert Evernote's export file(\*.enex) into HTML and images
 ==================================================
 
 Library for Go
@@ -65,4 +65,5 @@ $ ./enexToHtml -markdown [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.m
 $ ./enexToHtml [-markdown] [-prefix=PREFIX] ENEX-FILENAME.enex
 ```
 
-The PREFIX is used as filename-header for attachment-image-files.
+- The PREFIX is used as filename-header for image-files.
+- `-markdown` option is by [mattn/go-godown](https://github.com/mattn/godown)
