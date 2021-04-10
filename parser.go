@@ -13,6 +13,8 @@ type xmlResource struct {
 	XMLName   xml.Name `xml:"resource"`
 	Data      string   `xml:"data"`
 	Mime      string   `xml:"mime"`
+	Width     int      `xml:"width"`
+	Height    int      `xml:"height"`
 	FileName  string   `xml:"resource-attributes>file-name"`
 	SourceUrl string   `xml:"resource-attributes>source-url"`
 }
@@ -30,6 +32,8 @@ type Resource struct {
 	Hash      string
 	index     int
 	FileName  string
+	Width     int
+	Height    int
 }
 
 type Export struct {
@@ -57,6 +61,8 @@ func Parse(data []byte) (*Export, error) {
 			Mime:     strings.TrimSpace(rsc.Mime),
 			index:    i,
 			FileName: rsc.FileName,
+			Width:    rsc.Width,
+			Height:   rsc.Height,
 		}
 		sourceUrl := strings.TrimSpace(rsc.SourceUrl)
 		if u, err := url.QueryUnescape(sourceUrl); err == nil {

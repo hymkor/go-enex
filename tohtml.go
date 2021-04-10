@@ -58,7 +58,11 @@ func (exp *Export) Html(imagePathHeader string) (html string, images map[string]
 		if rsc, ok := exp.Hash[hash]; ok {
 			fname := imagePathHeader + renameWithNumber(rsc.FileName, rsc.index)
 			images[fname] = rsc.Data
-			return fmt.Sprintf(`<img alt="%[1]s" src="%[1]s" />`, url.QueryEscape(fname))
+			return fmt.Sprintf(
+				`<img alt="%[1]s" src="%[1]s" width="%[2]d" height="%[3]d" />`,
+				url.QueryEscape(fname),
+				rsc.Width,
+				rsc.Height)
 		} else {
 			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
 		}
