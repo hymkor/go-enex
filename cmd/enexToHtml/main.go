@@ -14,6 +14,8 @@ import (
 
 var optionMarkdown = flag.Bool("markdown", false, "output markdown")
 
+var optionShrink = flag.Bool("shrink-markdown", false, "output shrink markdown")
+
 var optionPrefix = flag.String("prefix", "", "prefix for attachement")
 
 func mains(args []string) error {
@@ -36,7 +38,7 @@ func mains(args []string) error {
 		ext := filepath.Ext(args[0])
 		baseName = args[0][:len(args[0])-len(ext)]
 		outputSuffix := ".html"
-		if *optionMarkdown {
+		if *optionMarkdown || *optionShrink {
 			outputSuffix = ".md"
 		}
 		fd, err := os.Create(baseName + outputSuffix)
@@ -56,10 +58,12 @@ func mains(args []string) error {
 		return err
 	}
 	html, images := export.Html(baseName)
-	if *optionMarkdown {
+	if *optionShrink {
 		var markdown strings.Builder
-		godown.Convert(&markdown, strings.NewReader(html), &godown.Option{})
+		godown.Convert(&markdown, strings.NewReader(html), nil)
 		enex.ShrinkMarkdown(strings.NewReader(markdown.String()), output)
+	} else if *optionMarkdown {
+		godown.Convert(output, strings.NewReader(html), nil)
 	} else {
 		io.WriteString(output, html)
 	}
