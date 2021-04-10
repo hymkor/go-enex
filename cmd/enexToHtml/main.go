@@ -57,7 +57,7 @@ func mains(args []string) error {
 	if err != nil {
 		return err
 	}
-	html, images := export.Html(baseName)
+	html, images := export.HtmlAndImagesWithRenamer(enex.DefaultRenamer(baseName))
 	if *optionShrink {
 		var markdown strings.Builder
 		godown.Convert(&markdown, strings.NewReader(html), nil)
@@ -68,8 +68,15 @@ func mains(args []string) error {
 		io.WriteString(output, html)
 	}
 	for fname, data := range images {
-		fmt.Fprintf(os.Stderr, "Create File: %s (%d bytes)\n", fname, len(data))
-		os.WriteFile(fname, data, 0666)
+		fmt.Fprint(os.Stderr, "Create File: ", fname)
+		fd, err := os.Create(fname)
+		if err != nil {
+			fmt.Fprintln(os.Stderr)
+			return err
+		}
+		n, _ := data.WriteTo(fd)
+		fd.Close()
+		fmt.Fprintf(os.Stderr, " (%d bytes)\n", n)
 	}
 	return nil
 }

@@ -26,7 +26,7 @@ type xmlEnExport struct {
 }
 
 type Resource struct {
-	Data      []byte
+	data      string
 	Mime      string
 	SourceUrl string
 	Hash      string
@@ -34,6 +34,18 @@ type Resource struct {
 	FileName  string
 	Width     int
 	Height    int
+}
+
+func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
+	strReader := strings.NewReader(rsc.data)
+	binReader := base64.NewDecoder(base64.StdEncoding, strReader)
+	return io.Copy(w, binReader)
+}
+
+func (rsc *Resource) Data() []byte {
+	var buffer bytes.Buffer
+	rsc.WriteTo(&buffer)
+	return buffer.Bytes()
 }
 
 type Export struct {
@@ -51,13 +63,8 @@ func Parse(data []byte) (*Export, error) {
 	resource := make(map[string][]*Resource)
 	hash := make(map[string]*Resource)
 	for i, rsc := range theXml.Resource {
-		strReader := strings.NewReader(rsc.Data)
-		binReader := base64.NewDecoder(base64.StdEncoding, strReader)
-		var buffer bytes.Buffer
-		io.Copy(&buffer, binReader)
-
 		r := &Resource{
-			Data:     buffer.Bytes(),
+			data:     rsc.Data,
 			Mime:     strings.TrimSpace(rsc.Mime),
 			index:    i,
 			FileName: rsc.FileName,
