@@ -36,6 +36,10 @@ type Resource struct {
 	Height    int
 }
 
+func (rsc *Resource) DataBeforeDecoded() string {
+	return rsc.data
+}
+
 func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
 	strReader := strings.NewReader(rsc.data)
 	binReader := base64.NewDecoder(base64.StdEncoding, strReader)

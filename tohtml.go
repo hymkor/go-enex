@@ -14,21 +14,6 @@ var (
 	rxDocType = regexp.MustCompile(`\s*<!DOCTYPE[^>]*>\s*`)
 )
 
-func convMediaTag(s string, hash2tag func(string) string) string {
-	var buffer strings.Builder
-	for {
-		m := rxMedia.FindStringSubmatchIndex(s)
-		if m == nil {
-			buffer.WriteString(s)
-			break
-		}
-		buffer.WriteString(s[:m[0]])
-		buffer.WriteString(hash2tag(s[m[2]:m[3]]))
-		s = s[m[1]:]
-	}
-	return buffer.String()
-}
-
 func renameWithNumber(fname string, n int) string {
 	if n <= 0 {
 		return fname
@@ -57,6 +42,8 @@ func (exp *Export) Html(imagePathHeader string) (html string, images map[string]
 	return html, images
 }
 
+var rxUrl = regexp.MustCompile(`^\w\w+\:`)
+
 func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (html string, images map[string]*Resource) {
 
 	html = exp.Content
@@ -71,18 +58,34 @@ func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (h
 
 	images = make(map[string]*Resource)
 
-	html = convMediaTag(html, func(hash string) string {
+	var buffer strings.Builder
+	for {
+		m := rxMedia.FindStringSubmatchIndex(html)
+		if m == nil {
+			buffer.WriteString(html)
+			break
+		}
+		buffer.WriteString(html[:m[0]])
+		hash := html[m[2]:m[3]]
+
 		if rsc, ok := exp.Hash[hash]; ok {
 			fname := renamer(rsc.FileName, rsc.index)
 			images[fname] = rsc
-			return fmt.Sprintf(
-				`<img alt="%[1]s" src="%[1]s" width="%[2]d" height="%[3]d" />`,
-				url.QueryEscape(fname),
+			var imgsrc string
+			if rxUrl.MatchString(fname) {
+				imgsrc = fname
+			} else {
+				imgsrc = url.QueryEscape(fname)
+			}
+			fmt.Fprintf(&buffer,
+				`<img src="%s" width="%d" height="%d" />`,
+				imgsrc,
 				rsc.Width,
 				rsc.Height)
 		} else {
-			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
+			fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
 		}
-	})
-	return html, images
+		html = html[m[1]:]
+	}
+	return buffer.String(), images
 }

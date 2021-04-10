@@ -18,6 +18,8 @@ var optionShrink = flag.Bool("shrink-markdown", false, "output shrink markdown")
 
 var optionPrefix = flag.String("prefix", "", "prefix for attachement")
 
+var optionEmbed = flag.Bool("embed", false, "use <img src=\"data:...\">")
+
 func mains(args []string) error {
 	var data []byte
 	var err error
@@ -57,7 +59,20 @@ func mains(args []string) error {
 	if err != nil {
 		return err
 	}
-	html, images := export.HtmlAndImagesWithRenamer(enex.DefaultRenamer(baseName))
+	var html string
+	var images map[string]*enex.Resource
+
+	if *optionEmbed {
+		html, images = export.HtmlAndImagesWithRenamer(
+			func(name string, index int) string {
+				rsc := export.Resource[name][index]
+				return fmt.Sprintf("data:%s;base64,%s",
+					rsc.Mime,
+					strings.TrimSpace(strings.ReplaceAll(rsc.DataBeforeDecoded(), "\n", "")))
+			})
+	} else {
+		html, images = export.HtmlAndImagesWithRenamer(enex.DefaultRenamer(baseName))
+	}
 	if *optionShrink {
 		var markdown strings.Builder
 		godown.Convert(&markdown, strings.NewReader(html), nil)
@@ -67,16 +82,18 @@ func mains(args []string) error {
 	} else {
 		io.WriteString(output, html)
 	}
-	for fname, data := range images {
-		fmt.Fprint(os.Stderr, "Create File: ", fname)
-		fd, err := os.Create(fname)
-		if err != nil {
-			fmt.Fprintln(os.Stderr)
-			return err
+	if !*optionEmbed {
+		for fname, data := range images {
+			fmt.Fprint(os.Stderr, "Create File: ", fname)
+			fd, err := os.Create(fname)
+			if err != nil {
+				fmt.Fprintln(os.Stderr)
+				return err
+			}
+			n, _ := data.WriteTo(fd)
+			fd.Close()
+			fmt.Fprintf(os.Stderr, " (%d bytes)\n", n)
 		}
-		n, _ := data.WriteTo(fd)
-		fd.Close()
-		fmt.Fprintf(os.Stderr, " (%d bytes)\n", n)
 	}
 	return nil
 }
