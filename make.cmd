@@ -21,3 +21,7 @@ exit /b
 :"md"
     for %%I in (*.enex) do cmd\enexToHtml\enexToHtml.exe -markdown "%%~I"
     exit /b
+
+:"shrink"
+    for %%I in (*.enex) do cmd\enexToHtml\enexToHtml.exe -shrink-markdown "%%~I"
+    exit /b
