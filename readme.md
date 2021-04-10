@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/zetamatta/go-enex?status.svg)](https://godoc.org/github.com/zetamatta/go-enex)
+
 go-enex - Convert Evernote's export file(\*.enex) into HTML and images
 ==================================================
 
