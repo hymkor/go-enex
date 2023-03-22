@@ -6,7 +6,7 @@ exit /b
     go fmt || exit /b
     go build || exit /b
     pushd cmd\enexToHtml || exit /b
-    go fmt && go build
+    go fmt && go build -o ../..
     popd
     exit /b
 
@@ -15,17 +15,17 @@ exit /b
     exit /b
 
 :"html"
-    for %%I in (*.enex) do cmd\enexToHtml\enexToHtml.exe "%%~I"
+    for %%I in (*.enex) do enexToHtml.exe "%%~I"
     exit /b
 
 :"md"
-    for %%I in (*.enex) do cmd\enexToHtml\enexToHtml.exe -markdown "%%~I"
+    for %%I in (*.enex) do enexToHtml.exe -markdown "%%~I"
     exit /b
 
 :"shrink"
-    for %%I in (*.enex) do cmd\enexToHtml\enexToHtml.exe -shrink-markdown "%%~I"
+    for %%I in (*.enex) do enexToHtml.exe -shrink-markdown "%%~I"
     exit /b
 
 :"embed"
-    for %%I in (*.enex) do cmd\enexToHtml\enexToHtml.exe -embed "%%~I"
+    for %%I in (*.enex) do enexToHtml.exe -embed "%%~I"
     exit /b
