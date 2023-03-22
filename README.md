@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/zetamatta/go-enex?status.svg)](https://godoc.org/github.com/zetamatta/go-enex)
+[![GoDoc](https://godoc.org/github.com/hymkor/go-enex?status.svg)](https://godoc.org/github.com/hymkor/go-enex)
 
 go-enex - Convert Evernote's export file(\*.enex) into HTML and images
 ==================================================
@@ -6,7 +6,7 @@ go-enex - Convert Evernote's export file(\*.enex) into HTML and images
 Library for Go
 --------------
 
-```go
+```example.go
 package main
 
 import (
@@ -14,7 +14,7 @@ import (
     "io"
     "os"
 
-    "github.com/zetamatta/go-enex"
+    "github.com/hymkor/go-enex"
 )
 
 func mains() error {
