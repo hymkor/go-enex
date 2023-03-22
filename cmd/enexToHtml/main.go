@@ -9,7 +9,8 @@ import (
 	"strings"
 
 	"github.com/mattn/godown"
-	"github.com/zetamatta/go-enex"
+
+	"github.com/hymkor/go-enex"
 )
 
 var optionMarkdown = flag.Bool("markdown", false, "output markdown")

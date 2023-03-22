@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/zetamatta/go-enex"
+	"github.com/hymkor/go-enex"
 )
 
 func TestShrinkMarkdown(t *testing.T) {

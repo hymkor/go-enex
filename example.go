@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package main
@@ -7,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/zetamatta/go-enex"
+	"github.com/hymkor/go-enex"
 )
 
 func mains() error {

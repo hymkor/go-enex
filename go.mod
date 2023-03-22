@@ -1,4 +1,4 @@
-module github.com/zetamatta/go-enex
+module github.com/hymkor/go-enex
 
 go 1.16
 
