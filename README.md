@@ -76,15 +76,10 @@ scoop install enexToHtml
 #### Example
 
 ```
-$ cd cmd/enexToHtml
-$ go build
-```
-
-```
 $ ./enexToHtml           [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.html
 $ ./enexToHtml -markdown [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.md
 $ ./enexToHtml [-markdown] [-prefix=PREFIX] ENEX-FILENAME.enex
 ```
 
 - The PREFIX is used as filename-header for image-files.
-- `-markdown` option is by [mattn/go-godown](https://github.com/mattn/godown)
+- `-markdown` makes a makedown file instead of HTML
