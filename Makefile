@@ -30,7 +30,7 @@ package:
 	$(SET) "GOOS=windows" && $(SET) "GOARCH=amd64" && $(MAKE) _package
 
 release:
-	gh release create -d -t $(VERSION) $(VERSION) $(wildcard $(NAME)-$(VERSION)-*.zip)
+	gh release create -d -t $(VERSION) $(VERSION) $(wildcard enexToHtml-$(VERSION)-*.zip)
 manifest:
 	make-scoop-manifest *-windows-*.zip > enexToHtml.json
 
