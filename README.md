@@ -3,6 +3,37 @@
 go-enex - Convert Evernote's export file(\*.enex) into HTML and images
 ==================================================
 
+How to use executable (enexToHtml)
+-------------------------
+
+### Install
+
+Download the binary package from [Releases](https://github.com/hymkor/go-enex/releases) and extract the executable.
+
+#### for scoop-installer
+
+```
+scoop install https://raw.githubusercontent.com/hymkor/go-enex/master/enexToHtml.json
+```
+
+or
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install enexToHtml
+```
+
+#### Example
+
+```
+$ ./enexToHtml           [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.html
+$ ./enexToHtml -markdown [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.md
+$ ./enexToHtml [-markdown] [-prefix=PREFIX] ENEX-FILENAME.enex
+```
+
+- The PREFIX is used as filename-header for image-files.
+- `-markdown` makes a makedown file instead of HTML
+
 Library for Go
 --------------
 
@@ -52,34 +83,3 @@ Create File: images-image_9.png (54726 bytes)
 Create File: images-image_11.png (52430 bytes)
 Create File: images-image_13.png (52293 bytes)
 ```
-
-Executable
------------
-
-### Install
-
-Download the binary package from [Releases](https://github.com/hymkor/go-enex/releases) and extract the executable.
-
-#### for scoop-installer
-
-```
-scoop install https://raw.githubusercontent.com/hymkor/go-enex/master/enexToHtml.json
-```
-
-or
-
-```
-scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
-scoop install enexToHtml
-```
-
-#### Example
-
-```
-$ ./enexToHtml           [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.html
-$ ./enexToHtml -markdown [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.md
-$ ./enexToHtml [-markdown] [-prefix=PREFIX] ENEX-FILENAME.enex
-```
-
-- The PREFIX is used as filename-header for image-files.
-- `-markdown` makes a makedown file instead of HTML
