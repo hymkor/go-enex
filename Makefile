@@ -43,8 +43,5 @@ test-html:
 test-md:
 	$(foreach I,$(wildcard *.enex),"./enexToHtml" -markdown $(I) && ) echo OK
 
-test-shrink:
-	$(foreach I,$(wildcard *.enex),"./enexToHtml" -shrink-markdown $(I) && ) echo OK
-
 test-embed:
 	$(foreach I,$(wildcard *.enex),"./enexToHtml" -embed $(I) && ) echo OK

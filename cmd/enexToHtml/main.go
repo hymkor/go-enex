@@ -13,9 +13,7 @@ import (
 	"github.com/hymkor/go-enex"
 )
 
-var optionMarkdown = flag.Bool("markdown", false, "output markdown")
-
-var optionShrink = flag.Bool("shrink-markdown", false, "output shrink markdown")
+var optionMarkdown = flag.Bool("markdown", false, "output shrink markdown")
 
 var optionPrefix = flag.String("prefix", "", "prefix for attachement")
 
@@ -41,7 +39,7 @@ func mains(args []string) error {
 		ext := filepath.Ext(args[0])
 		baseName = args[0][:len(args[0])-len(ext)]
 		outputSuffix := ".html"
-		if *optionMarkdown || *optionShrink {
+		if *optionMarkdown {
 			outputSuffix = ".md"
 		}
 		fd, err := os.Create(baseName + outputSuffix)
@@ -74,12 +72,10 @@ func mains(args []string) error {
 	} else {
 		html, images = export.HtmlAndImagesWithRenamer(enex.DefaultRenamer(baseName))
 	}
-	if *optionShrink {
+	if *optionMarkdown {
 		var markdown strings.Builder
 		godown.Convert(&markdown, strings.NewReader(html), nil)
 		enex.ShrinkMarkdown(strings.NewReader(markdown.String()), output)
-	} else if *optionMarkdown {
-		godown.Convert(output, strings.NewReader(html), nil)
 	} else {
 		io.WriteString(output, html)
 	}
