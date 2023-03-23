@@ -56,6 +56,25 @@ Create File: images-image_13.png (52293 bytes)
 Executable
 -----------
 
+### Install
+
+Download the binary package from [Releases](https://github.com/hymkor/go-enex/releases) and extract the executable.
+
+#### for scoop-installer
+
+```
+scoop install https://raw.githubusercontent.com/hymkor/go-enex/master/enexToHtml.json
+```
+
+or
+
+```
+scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
+scoop install enexToHtml
+```
+
+#### Example
+
 ```
 $ cd cmd/enexToHtml
 $ go build
