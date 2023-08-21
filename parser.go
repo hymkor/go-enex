@@ -4,19 +4,27 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"net/url"
+
 	"strings"
 )
 
 type xmlResource struct {
-	XMLName   xml.Name `xml:"resource"`
-	Data      string   `xml:"data"`
-	Mime      string   `xml:"mime"`
-	Width     int      `xml:"width"`
-	Height    int      `xml:"height"`
-	FileName  string   `xml:"resource-attributes>file-name"`
-	SourceUrl string   `xml:"resource-attributes>source-url"`
+	XMLName     xml.Name `xml:"resource"`
+	Data        string   `xml:"data"`
+	Mime        string   `xml:"mime"`
+	Width       int      `xml:"width"`
+	Height      int      `xml:"height"`
+	FileName    string   `xml:"resource-attributes>file-name"`
+	SourceUrl   string   `xml:"resource-attributes>source-url"`
+	Recognition []byte   `xml:"recognition"`
+}
+
+type xmlRecoIndex struct {
+	XMLName xml.Name `xml:"recoIndex"`
+	ObjID   string   `xml:"objID,attr"`
 }
 
 type xmlEnExport struct {
@@ -76,6 +84,20 @@ func Parse(data []byte, warn io.Writer) (*Export, error) {
 			Height:   rsc.Height,
 		}
 		fmt.Fprintln(warn, "Filename:", rsc.FileName)
+		if len(rsc.Recognition) > 0 {
+			var recoIndex xmlRecoIndex
+
+			err = xml.Unmarshal(rsc.Recognition, &recoIndex)
+			if err == nil && recoIndex.ObjID != "" {
+				fmt.Fprintln(warn, "objID:", recoIndex.ObjID)
+				r.Hash = recoIndex.ObjID
+				hash[recoIndex.ObjID] = r
+				resource[rsc.FileName] = append(resource[rsc.FileName], r)
+				continue
+			} else if err != nil {
+				fmt.Fprintln(warn, err.Error())
+			}
+		}
 		sourceUrl := strings.TrimSpace(rsc.SourceUrl)
 		if u, err := url.QueryUnescape(sourceUrl); err == nil {
 			fmt.Fprintln(warn, "Found SourceURL:", u)
