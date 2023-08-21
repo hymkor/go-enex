@@ -19,6 +19,8 @@ var optionPrefix = flag.String("prefix", "", "prefix for attachement")
 
 var optionEmbed = flag.Bool("embed", false, "use <img src=\"data:...\">")
 
+var optionVerbose = flag.Bool("v", false, "verbose")
+
 func mains(args []string) error {
 	var data []byte
 	var err error
@@ -54,7 +56,11 @@ func mains(args []string) error {
 			baseName = baseName + "-"
 		}
 	}
-	export, err := enex.Parse(data)
+	verbose := io.Discard
+	if *optionVerbose {
+		verbose = os.Stderr
+	}
+	export, err := enex.Parse(data, verbose)
 	if err != nil {
 		return err
 	}

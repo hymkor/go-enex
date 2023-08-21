@@ -58,7 +58,7 @@ type Export struct {
 	Hash     map[string]*Resource   // hash to the one resource
 }
 
-func Parse(data []byte) (*Export, error) {
+func Parse(data []byte, warn io.Writer) (*Export, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
@@ -75,13 +75,17 @@ func Parse(data []byte) (*Export, error) {
 			Width:    rsc.Width,
 			Height:   rsc.Height,
 		}
+		fmt.Fprintln(warn, "Filename:", rsc.FileName)
 		sourceUrl := strings.TrimSpace(rsc.SourceUrl)
 		if u, err := url.QueryUnescape(sourceUrl); err == nil {
+			fmt.Fprintln(warn, "Found SourceURL:", u)
 			r.SourceUrl = u
 			if field := strings.Fields(u); len(field) >= 4 {
 				r.Hash = field[2]
 				hash[field[2]] = r
 			}
+		} else {
+			fmt.Fprintln(warn, "Can not Unescape SourceURL:", sourceUrl)
 		}
 		resource[rsc.FileName] = append(resource[rsc.FileName], r)
 	}
