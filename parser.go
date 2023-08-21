@@ -66,7 +66,11 @@ type Export struct {
 	Hash     map[string]*Resource   // hash to the one resource
 }
 
-func Parse(data []byte, warn io.Writer) (*Export, error) {
+func Parse(data []byte) (*Export, error) {
+	return ParseVerbose(data, io.Discard)
+}
+
+func ParseVerbose(data []byte, warn io.Writer) (*Export, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {

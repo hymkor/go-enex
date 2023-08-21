@@ -60,7 +60,7 @@ func mains(args []string) error {
 	if *optionVerbose {
 		verbose = os.Stderr
 	}
-	export, err := enex.Parse(data, verbose)
+	export, err := enex.ParseVerbose(data, verbose)
 	if err != nil {
 		return err
 	}
