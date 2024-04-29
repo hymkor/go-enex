@@ -17,7 +17,7 @@ EXT=$(shell go env GOEXE)
 all:
 	go fmt
 	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
-	$(foreach I,$(wildcard cmd/*),cd "$(I)" && go fmt && $(SET) "CGO_ENABLED=0" && go build -o ../.. $(GOOPT) && ) echo OK
+	$(foreach I,$(wildcard cmd/*),go fmt -C $(I) && $(SET) "CGO_ENABLED=0" && go build -C $(I) -o $(CURDIR) $(GOOPT) && ) echo OK
 
 _package:
 	$(MAKE) all
