@@ -56,7 +56,7 @@ func (rsc *Resource) DataBeforeDecoded() string {
 }
 
 func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
-	strReader := strings.NewReader(rsc.data)
+	strReader := strings.NewReader(strings.TrimSpace(rsc.data))
 	binReader := base64.NewDecoder(base64.StdEncoding, strReader)
 	return io.Copy(w, binReader)
 }
