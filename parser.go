@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"net/url"
@@ -28,9 +29,15 @@ type xmlRecoIndex struct {
 }
 
 type xmlEnExport struct {
-	XMLName  xml.Name       `xml:"en-export"`
-	Content  string         `xml:"note>content"`
-	Resource []*xmlResource `xml:"note>resource"`
+	XMLName xml.Name   `xml:"en-export"`
+	Note    []*xmlNote `xml:"note"`
+}
+
+type xmlNote struct {
+	XMLName  xml.Name       `xml:"note"`
+	Title    string         `xml:"title"`
+	Content  string         `xml:"content"`
+	Resource []*xmlResource `xml:"resource"`
 }
 
 type Resource struct {
@@ -61,6 +68,7 @@ func (rsc *Resource) Data() []byte {
 }
 
 type Export struct {
+	Title    string
 	Content  string
 	Resource map[string][]*Resource // filename to the multi resources
 	Hash     map[string]*Resource   // hash to the one resource
@@ -71,54 +79,72 @@ func Parse(data []byte) (*Export, error) {
 }
 
 func ParseVerbose(data []byte, warn io.Writer) (*Export, error) {
+	exports, err := ParseMulti(data, warn)
+	if err != nil {
+		return nil, err
+	}
+	if len(exports) >= 2 {
+		return nil, errors.New("ParseVerbose: not support multi notes")
+	}
+	if len(exports) <= 0 {
+		return nil, errors.New("ParseVerbose: zero notes")
+	}
+	return exports[0], nil
+}
+
+func ParseMulti(data []byte, warn io.Writer) ([]*Export, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
 		return nil, err
 	}
-	resource := make(map[string][]*Resource)
-	hash := make(map[string]*Resource)
-	for i, rsc := range theXml.Resource {
-		r := &Resource{
-			data:     rsc.Data,
-			Mime:     strings.TrimSpace(rsc.Mime),
-			index:    i,
-			FileName: rsc.FileName,
-			Width:    rsc.Width,
-			Height:   rsc.Height,
-		}
-		fmt.Fprintln(warn, "Filename:", rsc.FileName)
-		if len(rsc.Recognition) > 0 {
-			var recoIndex xmlRecoIndex
+	exports := make([]*Export, 0, len(theXml.Note))
+	for _, note := range theXml.Note {
+		resource := make(map[string][]*Resource)
+		hash := make(map[string]*Resource)
+		for i, rsc := range note.Resource {
+			r := &Resource{
+				data:     rsc.Data,
+				Mime:     strings.TrimSpace(rsc.Mime),
+				index:    i,
+				FileName: rsc.FileName,
+				Width:    rsc.Width,
+				Height:   rsc.Height,
+			}
+			fmt.Fprintln(warn, "Filename:", rsc.FileName)
+			if len(rsc.Recognition) > 0 {
+				var recoIndex xmlRecoIndex
 
-			err = xml.Unmarshal(rsc.Recognition, &recoIndex)
-			if err == nil && recoIndex.ObjID != "" {
-				fmt.Fprintln(warn, "objID:", recoIndex.ObjID)
-				r.Hash = recoIndex.ObjID
-				hash[recoIndex.ObjID] = r
-				resource[rsc.FileName] = append(resource[rsc.FileName], r)
-				continue
-			} else if err != nil {
-				fmt.Fprintln(warn, err.Error())
+				err = xml.Unmarshal(rsc.Recognition, &recoIndex)
+				if err == nil && recoIndex.ObjID != "" {
+					fmt.Fprintln(warn, "objID:", recoIndex.ObjID)
+					r.Hash = recoIndex.ObjID
+					hash[recoIndex.ObjID] = r
+					resource[rsc.FileName] = append(resource[rsc.FileName], r)
+					continue
+				} else if err != nil {
+					fmt.Fprintln(warn, err.Error())
+				}
 			}
-		}
-		sourceUrl := strings.TrimSpace(rsc.SourceUrl)
-		if u, err := url.QueryUnescape(sourceUrl); err == nil {
-			fmt.Fprintln(warn, "Found SourceURL:", u)
-			r.SourceUrl = u
-			if field := strings.Fields(u); len(field) >= 4 {
-				r.Hash = field[2]
-				hash[field[2]] = r
+			sourceUrl := strings.TrimSpace(rsc.SourceUrl)
+			if u, err := url.QueryUnescape(sourceUrl); err == nil {
+				fmt.Fprintln(warn, "Found SourceURL:", u)
+				r.SourceUrl = u
+				if field := strings.Fields(u); len(field) >= 4 {
+					r.Hash = field[2]
+					hash[field[2]] = r
+				}
+			} else {
+				fmt.Fprintln(warn, "Can not Unescape SourceURL:", sourceUrl)
 			}
-		} else {
-			fmt.Fprintln(warn, "Can not Unescape SourceURL:", sourceUrl)
+			resource[rsc.FileName] = append(resource[rsc.FileName], r)
 		}
-		resource[rsc.FileName] = append(resource[rsc.FileName], r)
+		exports = append(exports, &Export{
+			Title:    note.Title,
+			Content:  strings.TrimSpace(note.Content),
+			Resource: resource,
+			Hash:     hash,
+		})
 	}
-
-	return &Export{
-		Content:  strings.TrimSpace(theXml.Content),
-		Resource: resource,
-		Hash:     hash,
-	}, nil
+	return exports, nil
 }
