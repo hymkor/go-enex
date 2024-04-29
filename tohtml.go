@@ -3,6 +3,7 @@ package enex
 import (
 	"fmt"
 	"net/url"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -75,7 +76,13 @@ func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (h
 			if rxUrl.MatchString(fname) {
 				imgsrc = fname
 			} else {
-				imgsrc = url.QueryEscape(fname)
+				dir := path.Dir(fname)
+				base := path.Base(fname)
+				if dir == "" || dir == "." {
+					imgsrc = url.PathEscape(fname)
+				} else {
+					imgsrc = path.Join(url.PathEscape(dir), url.PathEscape(base))
+				}
 			}
 			fmt.Fprintf(&buffer,
 				`<img src="%s" width="%d" height="%d" />`,
