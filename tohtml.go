@@ -34,6 +34,7 @@ func DefaultRenamer(imagePathHeader string) func(string, int) string {
 	}
 }
 
+// Deprecated: use ToHtml
 func (exp *Export) Html(imagePathHeader string) (html string, images map[string][]byte) {
 	html, rsc := exp.HtmlAndImagesWithRenamer(DefaultRenamer(imagePathHeader))
 	images = map[string][]byte{}
@@ -45,9 +46,28 @@ func (exp *Export) Html(imagePathHeader string) (html string, images map[string]
 
 var rxUrl = regexp.MustCompile(`^\w\w+\:`)
 
-func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (html string, images map[string]*Resource) {
+// Deprecated: use ToHtml
+func (exp *Export) HtmlAndImagesWithRenamer(_renamer func(string, int) string) (string, map[string]*Resource) {
 
-	html = exp.Content
+	images := make(map[string]*Resource)
+	html := exp.ToHtml(func(rsc *Resource) string {
+		fname := _renamer(rsc.FileName, rsc.index)
+		images[fname] = rsc
+		if rxUrl.MatchString(fname) {
+			return fname
+		}
+		dir := path.Dir(fname)
+		base := path.Base(fname)
+		if dir == "" || dir == "." {
+			return url.PathEscape(fname)
+		}
+		return path.Join(url.PathEscape(dir), url.PathEscape(base))
+	})
+	return html, images
+}
+
+func (exp *Export) ToHtml(mkImgSrc func(*Resource) string) string {
+	html := exp.Content
 	html = rxXml.ReplaceAllString(html, "")
 	html = rxDocType.ReplaceAllString(html, "<!DOCTYPE html>")
 	html = strings.ReplaceAll(html, "<en-note>",
@@ -56,8 +76,6 @@ func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (h
 	html = strings.ReplaceAll(html, "<div><br /></div>", "<br />")
 	html = rxLiDiv.ReplaceAllString(html, `<li>${1}</li>`)
 	html = rxBrSomething.ReplaceAllString(html, `${1}`)
-
-	images = make(map[string]*Resource)
 
 	var buffer strings.Builder
 	for {
@@ -70,20 +88,7 @@ func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (h
 		hash := html[m[2]:m[3]]
 
 		if rsc, ok := exp.Hash[hash]; ok {
-			fname := renamer(rsc.FileName, rsc.index)
-			images[fname] = rsc
-			var imgsrc string
-			if rxUrl.MatchString(fname) {
-				imgsrc = fname
-			} else {
-				dir := path.Dir(fname)
-				base := path.Base(fname)
-				if dir == "" || dir == "." {
-					imgsrc = url.PathEscape(fname)
-				} else {
-					imgsrc = path.Join(url.PathEscape(dir), url.PathEscape(base))
-				}
-			}
+			imgsrc := mkImgSrc(rsc)
 			fmt.Fprintf(&buffer,
 				`<img src="%s" width="%d" height="%d" />`,
 				imgsrc,
@@ -94,5 +99,5 @@ func (exp *Export) HtmlAndImagesWithRenamer(renamer func(string, int) string) (h
 		}
 		html = html[m[1]:]
 	}
-	return buffer.String(), images
+	return buffer.String()
 }
