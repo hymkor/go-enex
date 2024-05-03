@@ -1,3 +1,7 @@
+v0.2.0
+======
+May 3,2024
+
 - New executable `unenex`
     - It supports the enex files containing multi-notes
     - HTML and Markdown files are named as (NOTE-TITLE){.html OR .md}
