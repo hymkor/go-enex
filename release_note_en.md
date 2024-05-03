@@ -9,6 +9,7 @@ May 3,2024
     - The characters that can not used on filesystems are replaced to other characters (`<`→ `＜`, `>`→ `＞`, `"`→ `”`, `/`→ `／`, `\`→ `＼`, `|`→ `｜`, `?`→ `？`, `*`→ `＊`, `:`→ `：`, `(`→ `（`, `)`→ `）`, ` `→ `_`)
     - Abandon options `-embed` and `-prefix`. They are kept on `enexToHtml`
     - Executable `enexToHtml` is deprecated, but the source files are kept as an example of the package.
+- Fix the problem decode failed when the encoding text has spaces as prefix or postfix
 
 v0.1.1
 ======
