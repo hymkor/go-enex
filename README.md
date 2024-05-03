@@ -32,7 +32,7 @@ scoop install unenex
 #### Example
 
 ```
-$ ./unenex [-markdown] ENEX-FILENAME.enex
+$ unenex [-markdown] ENEX-FILENAME.enex
 ```
 
 - `-markdown` makes a makedown file instead of HTML
@@ -46,28 +46,69 @@ package main
 import (
     "fmt"
     "io"
+    "net/url"
     "os"
+    "path"
+    "path/filepath"
+    "strings"
 
     "github.com/hymkor/go-enex"
 )
+
+var toSafe = strings.NewReplacer(
+    `<`, `＜`,
+    `>`, `＞`,
+    `"`, `”`,
+    `/`, `／`,
+    `\`, `＼`,
+    `|`, `｜`,
+    `?`, `？`,
+    `*`, `＊`,
+    `:`, `：`,
+    `(`, `（`,
+    `)`, `）`,
+    ` `, `_`,
+)
+
+func toUniqName(name string, index int) string {
+    ext := path.Ext(name)
+    base := name[:len(name)-len(ext)]
+    return fmt.Sprintf("%s%d%s", base, index, ext)
+}
 
 func mains() error {
     data, err := io.ReadAll(os.Stdin)
     if err != nil {
         return err
     }
-    // enex.Parse can not support multi-notes enex file.
-    // To Parse multi-notes enex file, use `enex.ParseMulti`
-    export, err := enex.Parse(data)
+    notes, err := enex.ParseMulti(data, os.Stderr)
     if err != nil {
         return err
     }
-    html, images := export.Html("images-")
-    fmt.Println(html)
+    for _, note := range notes {
+        baseName := toSafe.Replace(note.Title)
+        images := make(map[string]*enex.Resource)
+        dir := baseName + ".files"
+        dirEscape := url.PathEscape(dir)
+        html := note.ToHtml(func(rsc *enex.Resource) string {
+            name := toSafe.Replace(toUniqName(rsc.FileName, rsc.Index))
+            images[filepath.Join(dir, name)] = rsc
+            return path.Join(dirEscape, url.PathEscape(name))
+        })
+        err := os.WriteFile(baseName+".html", []byte(html), 0644)
+        if err != nil {
+            return err
+        }
+        fmt.Fprintf(os.Stderr, "Create File: %s.html (%d bytes)\n", baseName, len(html))
 
-    for fname, data := range images {
-        fmt.Fprintf(os.Stderr, "Create File: %s (%d bytes)\n", fname, len(data))
-        os.WriteFile(fname, data, 0666)
+        if len(images) > 0 {
+            os.Mkdir(dir, 0755)
+            for fname, rsc := range images {
+                data := rsc.Data()
+                fmt.Fprintf(os.Stderr, "Create File: %s (%d bytes)\n", fname, len(data))
+                os.WriteFile(fname, data, 0666)
+            }
+        }
     }
     return nil
 }
@@ -77,14 +118,4 @@ func main() {
         os.Exit(1)
     }
 }
-```
-
-```
-$ go run example.go < sample.enex > sample.html
-Create File: images-image_19.png (7232 bytes)
-Create File: images-image_21.png (3633 bytes)
-Create File: images-image_4.png (50815 bytes)
-Create File: images-image_9.png (54726 bytes)
-Create File: images-image_11.png (52430 bytes)
-Create File: images-image_13.png (52293 bytes)
 ```
