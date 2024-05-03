@@ -1,3 +1,11 @@
+- New executable `unenex`
+    - It supports the enex files containing multi-notes
+    - HTML and Markdown files are named as (NOTE-TITLE){.html OR .md}
+    - Image files are put on the folder named as (NOTE-TITLE).files
+    - The characters that can not used on filesystems are replaced to other characters (`<`→ `＜`, `>`→ `＞`, `"`→ `”`, `/`→ `／`, `\`→ `＼`, `|`→ `｜`, `?`→ `？`, `*`→ `＊`, `:`→ `：`, `(`→ `（`, `)`→ `）`, ` `→ `_`)
+    - Abandon options `-embed` and `-prefix`. They are kept on `enexToHtml`
+    - Executable `enexToHtml` is deprecated, but the source files are kept as an example of the package.
+
 v0.1.1
 ======
 Aug 21, 2023
