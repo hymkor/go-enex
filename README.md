@@ -10,12 +10,11 @@ How to use executable (unenex)
 
 Download the binary package from [Releases](https://github.com/hymkor/go-enex/releases) and extract the executable.
 
-<!-- ### Use `go install`
+### Use `go install`
 
 ```
 go install github.com/hymkor/go-enex/cmd/unenex@latest
 ```
--->
 
 #### Use scoop-installer
 
