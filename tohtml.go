@@ -51,7 +51,7 @@ func (exp *Export) HtmlAndImagesWithRenamer(_renamer func(string, int) string) (
 
 	images := make(map[string]*Resource)
 	html := exp.ToHtml(func(rsc *Resource) string {
-		fname := _renamer(rsc.FileName, rsc.index)
+		fname := _renamer(rsc.FileName, rsc.Index)
 		images[fname] = rsc
 		if rxUrl.MatchString(fname) {
 			return fname

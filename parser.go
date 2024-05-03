@@ -45,7 +45,7 @@ type Resource struct {
 	Mime      string
 	SourceUrl string
 	Hash      string
-	index     int
+	Index     int
 	FileName  string
 	Width     int
 	Height    int
@@ -106,7 +106,7 @@ func ParseMulti(data []byte, warn io.Writer) ([]*Export, error) {
 			r := &Resource{
 				data:     rsc.Data,
 				Mime:     strings.TrimSpace(rsc.Mime),
-				index:    i,
+				Index:    i,
 				FileName: rsc.FileName,
 				Width:    rsc.Width,
 				Height:   rsc.Height,
