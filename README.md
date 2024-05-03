@@ -3,35 +3,39 @@
 go-enex - Convert Evernote's export file(\*.enex) into HTML and images
 ==================================================
 
-How to use executable (enexToHtml)
+How to use executable (unenex)
 -------------------------
 
 ### Install
 
 Download the binary package from [Releases](https://github.com/hymkor/go-enex/releases) and extract the executable.
 
-#### for scoop-installer
+<!-- ### Use `go install`
 
 ```
-scoop install https://raw.githubusercontent.com/hymkor/go-enex/master/enexToHtml.json
+go install github.com/hymkor/go-enex/cmd/unenex@latest
+```
+-->
+
+#### Use scoop-installer
+
+```
+scoop install https://raw.githubusercontent.com/hymkor/go-enex/master/unenex.json
 ```
 
 or
 
 ```
 scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
-scoop install enexToHtml
+scoop install unenex
 ```
 
 #### Example
 
 ```
-$ ./enexToHtml           [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.html
-$ ./enexToHtml -markdown [-prefix=PREFIX] < ENEX-FILENAME.enex > ENEX-FILENAME.md
-$ ./enexToHtml [-markdown] [-prefix=PREFIX] ENEX-FILENAME.enex
+$ ./unenex [-markdown] ENEX-FILENAME.enex
 ```
 
-- The PREFIX is used as filename-header for image-files.
 - `-markdown` makes a makedown file instead of HTML
 
 Library for Go
