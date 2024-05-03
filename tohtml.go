@@ -9,12 +9,6 @@ import (
 	"strings"
 )
 
-var (
-	rxMedia   = regexp.MustCompile(`\s*<en-media[^>]*hash="([^"]*)"[^>]*/>\s*`)
-	rxXml     = regexp.MustCompile(`\s*<\?xml[^>]*>\s*`)
-	rxDocType = regexp.MustCompile(`\s*<!DOCTYPE[^>]*>\s*`)
-)
-
 func renameWithNumber(fname string, n int) string {
 	if n <= 0 {
 		return fname
@@ -23,10 +17,6 @@ func renameWithNumber(fname string, n int) string {
 	base := fname[:len(fname)-len(ext)]
 	return fmt.Sprintf("%s_%d%s", base, n, ext)
 }
-
-var rxLiDiv = regexp.MustCompile(`<li><div>([^<>]*)</div></li>`)
-
-var rxBrSomething = regexp.MustCompile(`<br />(<(?:(?:div)|(?:ol)|(?:ul)))`)
 
 func DefaultRenamer(imagePathHeader string) func(string, int) string {
 	return func(baseName string, n int) string {
@@ -66,6 +56,17 @@ func (exp *Export) HtmlAndImagesWithRenamer(_renamer func(string, int) string) (
 	return html, images
 }
 
+var (
+	rxXml         = regexp.MustCompile(`\s*<\?xml[^>]*>\s*`)
+	rxDocType     = regexp.MustCompile(`(?s)\s*<!DOCTYPE[^>]*>\s*`)
+	rxDivBrDiv    = regexp.MustCompile(`(?s)<div>\s*<br\s*/>\s*</div>`)
+	rxDivBrDiv2   = regexp.MustCompile(`(?s)</div>\s*<br\s*/>\s*<div>`)
+	rxLiDiv       = regexp.MustCompile(`(?s)<li>\s*<div>([^<>]*)</div>\s*</li>`)
+	rxBrSomething = regexp.MustCompile(`(?s)<br\s*/>\s*(<(?:(?:div)|(?:ol)|(?:ul)))`)
+	rxMedia       = regexp.MustCompile(`(?s)\s*<en-media[^>]*hash="([^"]*)"[^>]*/>\s*`)
+	rxEnds        = regexp.MustCompile(`(?s)</(?:(?:div)|(?:p))>`)
+)
+
 func (exp *Export) ToHtml(mkImgSrc func(*Resource) string) string {
 	html := exp.Content
 	html = rxXml.ReplaceAllString(html, "")
@@ -73,9 +74,11 @@ func (exp *Export) ToHtml(mkImgSrc func(*Resource) string) string {
 	html = strings.ReplaceAll(html, "<en-note>",
 		"<html><head><meta charset=\"utf-8\"></head><body>\n")
 	html = strings.ReplaceAll(html, "</en-note>", "</body></html>\n")
-	html = strings.ReplaceAll(html, "<div><br /></div>", "<br />")
-	html = rxLiDiv.ReplaceAllString(html, `<li>${1}</li>`)
+	html = rxDivBrDiv.ReplaceAllString(html, "<br/>\n")
+	html = rxDivBrDiv2.ReplaceAllString(html, "</div><div>")
+	html = rxLiDiv.ReplaceAllString(html, "<li>${1}</li>\n")
 	html = rxBrSomething.ReplaceAllString(html, `${1}`)
+	html = rxEnds.ReplaceAllString(html, "${0}\n")
 
 	var buffer strings.Builder
 	for {
