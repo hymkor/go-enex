@@ -53,6 +53,8 @@ func mains() error {
     if err != nil {
         return err
     }
+    // enex.Parse can not support multi-notes enex file.
+    // To Parse multi-notes enex file, use `enex.ParseMulti`
     export, err := enex.Parse(data)
     if err != nil {
         return err
