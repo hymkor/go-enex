@@ -78,8 +78,7 @@ func mains(args []string) error {
 				note.Title,
 			)
 		}
-		imgSrc := enex.NewImgSrc(note)
-		html := note.ToHtml(imgSrc)
+		html, imgSrc := note.HtmlAndDir()
 		if *optionMarkdown {
 			var markdown strings.Builder
 			godown.Convert(&markdown, strings.NewReader(html), nil)

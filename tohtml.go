@@ -103,3 +103,9 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 	}
 	return buffer.String()
 }
+
+func (exp *Export) HtmlAndDir() (string, *ImgSrc) {
+	imgSrc := NewImgSrc(exp)
+	html := exp.ToHtml(imgSrc)
+	return html, imgSrc
+}
