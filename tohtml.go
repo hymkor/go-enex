@@ -9,53 +9,6 @@ import (
 	"strings"
 )
 
-func renameWithNumber(fname string, n int) string {
-	if n <= 0 {
-		return fname
-	}
-	ext := filepath.Ext(fname)
-	base := fname[:len(fname)-len(ext)]
-	return fmt.Sprintf("%s_%d%s", base, n, ext)
-}
-
-func DefaultRenamer(imagePathHeader string) func(string, int) string {
-	return func(baseName string, n int) string {
-		return imagePathHeader + renameWithNumber(baseName, n)
-	}
-}
-
-// Deprecated: use ToHtml
-func (exp *Export) Html(imagePathHeader string) (html string, images map[string][]byte) {
-	html, rsc := exp.HtmlAndImagesWithRenamer(DefaultRenamer(imagePathHeader))
-	images = map[string][]byte{}
-	for name, r := range rsc {
-		images[name] = r.Data()
-	}
-	return html, images
-}
-
-var rxUrl = regexp.MustCompile(`^\w\w+\:`)
-
-// Deprecated: use ToHtml
-func (exp *Export) HtmlAndImagesWithRenamer(_renamer func(string, int) string) (string, map[string]*Resource) {
-
-	images := make(map[string]*Resource)
-	html := exp.ToHtml(func(rsc *Resource) string {
-		fname := _renamer(rsc.FileName, rsc.Index)
-		images[fname] = rsc
-		if rxUrl.MatchString(fname) {
-			return fname
-		}
-		dir := path.Dir(fname)
-		base := path.Base(fname)
-		if dir == "" || dir == "." {
-			return url.PathEscape(fname)
-		}
-		return path.Join(url.PathEscape(dir), url.PathEscape(base))
-	})
-	return html, images
-}
-
 var (
 	rxXml         = regexp.MustCompile(`\s*<\?xml[^>]*>\s*`)
 	rxDocType     = regexp.MustCompile(`(?s)\s*<!DOCTYPE[^>]*>\s*`)
@@ -67,7 +20,53 @@ var (
 	rxEnds        = regexp.MustCompile(`(?s)</(?:(?:div)|(?:p))>`)
 )
 
-func (exp *Export) ToHtml(mkImgSrc func(*Resource) string) string {
+var ToSafe = strings.NewReplacer(
+	`<`, `＜`,
+	`>`, `＞`,
+	`"`, `”`,
+	`/`, `／`,
+	`\`, `＼`,
+	`|`, `｜`,
+	`?`, `？`,
+	`*`, `＊`,
+	`:`, `：`,
+	`(`, `（`,
+	`)`, `）`,
+	` `, `_`,
+)
+
+func ToUniqName(name string, index int) string {
+	ext := path.Ext(name)
+	base := name[:len(name)-len(ext)]
+	return fmt.Sprintf("%s%d%s", base, index, ext)
+}
+
+type ImgSrc struct {
+	Images    map[string]*Resource
+	baseName  string
+	Dir       string
+	dirEscape string
+}
+
+func NewImgSrc(note *Export) *ImgSrc {
+	baseName := ToSafe.Replace(note.Title)
+	dir := baseName + ".files"
+	dirEscape := url.PathEscape(dir)
+	return &ImgSrc{
+		Images:    make(map[string]*Resource),
+		baseName:  baseName,
+		Dir:       dir,
+		dirEscape: dirEscape,
+	}
+}
+
+func (imgSrc *ImgSrc) Make(rsc *Resource) string {
+	name := ToSafe.Replace(ToUniqName(rsc.FileName, rsc.Index))
+	imgSrc.Images[filepath.Join(imgSrc.Dir, name)] = rsc
+	return path.Join(imgSrc.dirEscape, url.PathEscape(name))
+}
+
+func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 	html := exp.Content
 	html = rxXml.ReplaceAllString(html, "")
 	html = rxDocType.ReplaceAllString(html, "<!DOCTYPE html>")
@@ -91,10 +90,10 @@ func (exp *Export) ToHtml(mkImgSrc func(*Resource) string) string {
 		hash := html[m[2]:m[3]]
 
 		if rsc, ok := exp.Hash[hash]; ok {
-			imgsrc := mkImgSrc(rsc)
+			imgsrc1 := imgSrc.Make(rsc)
 			fmt.Fprintf(&buffer,
 				`<img src="%s" width="%d" height="%d" />`,
-				imgsrc,
+				imgsrc1,
 				rsc.Width,
 				rsc.Height)
 		} else {

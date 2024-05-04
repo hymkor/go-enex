@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/url"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -15,26 +14,9 @@ import (
 	"github.com/hymkor/go-enex"
 )
 
-var optionMarkdown = flag.Bool("markdown", false, "output shrink markdown")
-
-var optionVerbose = flag.Bool("v", false, "verbose")
-
-var unmarkdown = strings.NewReplacer()
-
-var toSafe = strings.NewReplacer(
-	`<`, `＜`,
-	`>`, `＞`,
-	`"`, `”`,
-	`/`, `／`,
-	`\`, `＼`,
-	`|`, `｜`,
-	`?`, `？`,
-	`*`, `＊`,
-	`:`, `：`,
-	`(`, `（`,
-	`)`, `）`,
-	` `, `_`,
-	// `.`, `．`,
+var (
+	optionMarkdown = flag.Bool("markdown", false, "output shrink markdown")
+	optionVerbose  = flag.Bool("v", false, "verbose")
 )
 
 func mains(args []string) error {
@@ -83,10 +65,7 @@ func mains(args []string) error {
 		}()
 	}
 	for _, note := range exports {
-		var html string
-		var images map[string]*enex.Resource
-
-		safeName := toSafe.Replace(note.Title)
+		safeName := enex.ToSafe.Replace(note.Title)
 
 		if *optionMarkdown {
 			fmt.Fprintf(index, "* [%s](%s)\n",
@@ -99,15 +78,8 @@ func mains(args []string) error {
 				note.Title,
 			)
 		}
-		html, images = note.HtmlAndImagesWithRenamer(
-			func(fname string, index int) string {
-				ext := filepath.Ext(fname)
-				baseName := toSafe.Replace(fname[:len(fname)-len(ext)])
-				fname = fmt.Sprintf("%s_%d%s", baseName, index, ext)
-				fullpath := path.Join(safeName+".files", fname)
-				return fullpath
-			},
-		)
+		imgSrc := enex.NewImgSrc(note)
+		html := note.ToHtml(imgSrc)
 		if *optionMarkdown {
 			var markdown strings.Builder
 			godown.Convert(&markdown, strings.NewReader(html), nil)
@@ -127,7 +99,7 @@ func mains(args []string) error {
 			fd.Close()
 			fmt.Println("Create File:", safeName+".html")
 		}
-		for fname, data := range images {
+		for fname, data := range imgSrc.Images {
 			dir := filepath.Dir(fname)
 			if stat, err := os.Stat(dir); os.IsNotExist(err) {
 				fmt.Fprintln(os.Stderr, "Create Dir", dir)
