@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/mattn/godown"
@@ -131,7 +132,17 @@ func mains(args []string) error {
 	return nil
 }
 
+var version string
+
 func main() {
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "%s %s-%s-%s\n",
+			filepath.Base(os.Args[0]),
+			version,
+			runtime.GOOS,
+			runtime.GOARCH)
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
