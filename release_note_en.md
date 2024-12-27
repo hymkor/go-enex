@@ -1,3 +1,7 @@
+v0.2.1
+======
+Dec 28, 2024
+
 - Non-images attachments were embedded with `<img>` tags into output-html as if they were images. Modified to use `<a>` to link attachments
 - The `-h` option shows the version of program, OS and CPU-architecture now
 
