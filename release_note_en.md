@@ -1,3 +1,6 @@
+- Non-images attachments were embedded with `<img>` tags into output-html as if they were images. Modified to use `<a>` to link attachments
+- The `-h` option shows the version of program, OS and CPU-architecture now
+
 v0.2.0
 ======
 May 3,2024
