@@ -91,11 +91,18 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 
 		if rsc, ok := exp.Hash[hash]; ok {
 			imgsrc1 := imgSrc.Make(rsc)
-			fmt.Fprintf(&buffer,
-				`<img src="%s" width="%d" height="%d" />`,
-				imgsrc1,
-				rsc.Width,
-				rsc.Height)
+			switch strings.ToUpper(filepath.Ext(imgsrc1)) {
+			case ".JPG", ".JPEG", ".PNG", ".GIF":
+				fmt.Fprintf(&buffer,
+					`<img src="%s" width="%d" height="%d" />`,
+					imgsrc1,
+					rsc.Width,
+					rsc.Height)
+			default:
+				fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
+					imgsrc1,
+					filepath.Base(imgsrc1))
+			}
 		} else {
 			fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
 		}
