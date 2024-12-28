@@ -24,24 +24,42 @@ func mains(args []string) error {
 	var data []byte
 	var err error
 
+	verbose := io.Discard
+	if *optionVerbose {
+		verbose = os.Stderr
+	}
+
+	var exports []*enex.Export
+
 	if len(args) <= 0 {
 		data, err = io.ReadAll(os.Stdin)
 		if err != nil {
 			return err
 		}
-	} else {
-		data, err = os.ReadFile(args[0])
+		exports, err = enex.ParseMulti(data, verbose)
 		if err != nil {
 			return err
 		}
-	}
-	verbose := io.Discard
-	if *optionVerbose {
-		verbose = os.Stderr
-	}
-	exports, err := enex.ParseMulti(data, verbose)
-	if err != nil {
-		return err
+	} else {
+		_args := []string{}
+		for _, arg := range args {
+			if matches, err := filepath.Glob(arg); err == nil && len(matches) >= 1 {
+				_args = append(_args, matches...)
+			} else {
+				_args = append(_args, arg)
+			}
+		}
+		for _, arg := range _args {
+			data, err = os.ReadFile(arg)
+			if err != nil {
+				return err
+			}
+			_exports, err := enex.ParseMulti(data, verbose)
+			if err != nil {
+				return err
+			}
+			exports = append(exports, _exports...)
+		}
 	}
 	var index *os.File
 	if *optionMarkdown {
