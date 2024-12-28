@@ -1,9 +1,17 @@
+[#2]: https://github.com/hymkor/go-enex/issues/2
+
+- ([#2]) Do not rename filenames as possible
+    - ([#2]-2) Do not append serial-numbers to filenames unless filenames are duplicated
+    - ([#2]-3) Do not replace SPACE to UNDERSCORE
+- `unenex` can read multiple enex-files and support wildcards now
+- ([#2]-5) Fix: images were always expanded to full size
+
 v0.2.1
 ======
 Dec 28, 2024
 
-- Non-images attachments were embedded with `<img>` tags into output-html as if they were images. Modified to use `<a>` to link attachments
-- The `-h` option shows the version of program, OS and CPU-architecture now
+- [#2] Non-images attachments were embedded with `<img>` tags into output-html as if they were images. Modified to use `<a>` to link attachments
+- unenex: `-h` option shows the version of program, OS and CPU-architecture now
 
 v0.2.0
 ======
