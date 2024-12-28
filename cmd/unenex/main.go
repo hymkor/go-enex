@@ -75,7 +75,7 @@ func mains(args []string) error {
 			)
 		} else {
 			fmt.Fprintf(index, "<li><a href=\"%s\">%s</a></li>\n",
-				url.QueryEscape(safeName+".html"),
+				url.PathEscape(safeName+".html"),
 				note.Title,
 			)
 		}

@@ -31,7 +31,6 @@ var ToSafe = strings.NewReplacer(
 	`?`, `？`,
 	`*`, `＊`,
 	`:`, `：`,
-	` `, `_`,
 )
 
 type SerialNo map[string][]int
