@@ -17,9 +17,48 @@ var (
 	rxDivBrDiv2   = regexp.MustCompile(`(?s)</div>\s*<br\s*/>\s*<div>`)
 	rxLiDiv       = regexp.MustCompile(`(?s)<li>\s*<div>([^<>]*)</div>\s*</li>`)
 	rxBrSomething = regexp.MustCompile(`(?s)<br\s*/>\s*(<(?:(?:div)|(?:ol)|(?:ul)))`)
-	rxMedia       = regexp.MustCompile(`(?s)\s*<en-media[^>]*hash="([^"]*)"[^>]*/>\s*`)
+	rxMedia       = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
 	rxEnds        = regexp.MustCompile(`(?s)</(?:(?:div)|(?:p))>`)
+
+	rxHash          = regexp.MustCompile(`hash="([^"]+)"`)
+	rxWidth         = regexp.MustCompile(`width="([^"]+)"`)
+	rxHeight        = regexp.MustCompile(`height="([^"]+)"`)
+	rxStyle         = regexp.MustCompile(`style="([^"]+)"`)
+	rxNaturalWidth  = regexp.MustCompile(`--en-naturalWidth:([^;]+);`)
+	rxNaturalHeight = regexp.MustCompile(`--en-naturalHeight:([^;]+);`)
 )
+
+func findWidth(attrib string) string {
+	width := rxWidth.FindStringSubmatch(attrib)
+	if width != nil {
+		return width[1]
+	}
+	style := rxStyle.FindStringSubmatch(attrib)
+	if style == nil {
+		return ""
+	}
+	width = rxNaturalWidth.FindStringSubmatch(style[1])
+	if width != nil {
+		return width[1]
+	}
+	return ""
+}
+
+func findHeight(attrib string) string {
+	height := rxHeight.FindStringSubmatch(attrib)
+	if height != nil {
+		return height[1]
+	}
+	style := rxStyle.FindStringSubmatch(attrib)
+	if style == nil {
+		return ""
+	}
+	height = rxNaturalHeight.FindStringSubmatch(style[1])
+	if height != nil {
+		return height[1]
+	}
+	return ""
+}
 
 var ToSafe = strings.NewReplacer(
 	`<`, `＜`,
@@ -106,24 +145,35 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 			break
 		}
 		buffer.WriteString(html[:m[0]])
-		hash := html[m[2]:m[3]]
+		attrib := html[m[2]:m[3]]
+		hash := rxHash.FindStringSubmatch(attrib)
 
-		if rsc, ok := exp.Hash[hash]; ok {
-			imgsrc1 := imgSrc.Make(rsc)
-			switch strings.ToUpper(filepath.Ext(imgsrc1)) {
-			case ".JPG", ".JPEG", ".PNG", ".GIF":
-				fmt.Fprintf(&buffer,
-					`<img src="%s" width="%d" height="%d" />`,
-					imgsrc1,
-					rsc.Width,
-					rsc.Height)
-			default:
-				fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
-					imgsrc1,
-					filepath.Base(imgsrc1))
+		if hash != nil {
+			if rsc, ok := exp.Hash[hash[1]]; ok {
+				imgsrc1 := imgSrc.Make(rsc)
+				switch strings.ToUpper(filepath.Ext(imgsrc1)) {
+				case ".JPG", ".JPEG", ".PNG", ".GIF":
+					fmt.Fprintf(&buffer, `<img src="%s"`, imgsrc1)
+					if w := findWidth(attrib); w != "" {
+						fmt.Fprintf(&buffer, ` width="%s"`, w)
+					} else {
+						fmt.Fprintf(&buffer, ` width="%d"`, rsc.Width)
+					}
+					if h := findHeight(attrib); h != "" {
+						fmt.Fprintf(&buffer, ` height="%s" />`, h)
+					} else {
+						fmt.Fprintf(&buffer, ` height="%d" />`, rsc.Height)
+					}
+				default:
+					fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
+						imgsrc1,
+						filepath.Base(imgsrc1))
+				}
+			} else {
+				fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
 			}
 		} else {
-			fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
+			fmt.Fprintf(&buffer, `<!-- Error: hash not found -->`)
 		}
 		html = html[m[1]:]
 	}
