@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"unicode/utf8"
 )
 
 var (
@@ -19,43 +20,88 @@ var (
 	rxBrSomething = regexp.MustCompile(`(?s)<br\s*/>\s*(<(?:(?:div)|(?:ol)|(?:ul)))`)
 	rxMedia       = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
 	rxEnds        = regexp.MustCompile(`(?s)</(?:(?:div)|(?:p))>`)
-
-	rxHash          = regexp.MustCompile(`hash="([^"]+)"`)
-	rxWidth         = regexp.MustCompile(`width="([^"]+)"`)
-	rxHeight        = regexp.MustCompile(`height="([^"]+)"`)
-	rxStyle         = regexp.MustCompile(`style="([^"]+)"`)
-	rxNaturalWidth  = regexp.MustCompile(`--en-naturalWidth:([^;]+);`)
-	rxNaturalHeight = regexp.MustCompile(`--en-naturalHeight:([^;]+);`)
 )
 
-func findWidth(attrib string) string {
-	width := rxWidth.FindStringSubmatch(attrib)
-	if width != nil {
-		return width[1]
+func parseEnMediaAttr(s string) map[string]string {
+	result := map[string]string{}
+	for len(s) > 0 {
+		// skip spaces
+		c, siz := utf8.DecodeRuneInString(s)
+		s = s[siz:]
+		if strings.ContainsRune(" \v\t\r\n", c) {
+			continue
+		}
+		var name strings.Builder
+		for {
+			if c == '=' {
+				var value strings.Builder
+				q := false
+				for {
+					if len(s) <= 0 {
+						result[name.String()] = value.String()
+						break
+					}
+					c, siz = utf8.DecodeRuneInString(s)
+					s = s[siz:]
+					if c == '"' {
+						q = !q
+					} else if !q && strings.ContainsRune(" \v\t\r\n", c) {
+						result[name.String()] = value.String()
+						break
+					} else {
+						value.WriteRune(c)
+					}
+				}
+				break
+			}
+			if strings.ContainsRune(" \v\t\r\n", c) {
+				result[name.String()] = ""
+				break
+			}
+			name.WriteRune(c)
+			if len(s) <= 0 {
+				result[name.String()] = ""
+				return result
+			}
+			c, siz = utf8.DecodeRuneInString(s)
+			s = s[siz:]
+		}
 	}
-	style := rxStyle.FindStringSubmatch(attrib)
-	if style == nil {
-		return ""
+	return result
+}
+
+func parseEnMediaStyle(style string) map[string]string {
+	result := map[string]string{}
+	for {
+		var eq string
+		var ok bool
+		eq, style, ok = strings.Cut(style, ";")
+		if eq != "" {
+			name, value, _ := strings.Cut(eq, ":")
+			result[strings.TrimSpace(name)] = strings.TrimSpace(value)
+		}
+		if !ok {
+			return result
+		}
 	}
-	width = rxNaturalWidth.FindStringSubmatch(style[1])
-	if width != nil {
-		return width[1]
+}
+
+func findWidth(attr, style map[string]string) string {
+	if value, ok := attr["width"]; ok {
+		return value
+	}
+	if value, ok := style["--en-naturalWidth"]; ok {
+		return value
 	}
 	return ""
 }
 
-func findHeight(attrib string) string {
-	height := rxHeight.FindStringSubmatch(attrib)
-	if height != nil {
-		return height[1]
+func findHeight(attr, style map[string]string) string {
+	if value, ok := attr["height"]; ok {
+		return value
 	}
-	style := rxStyle.FindStringSubmatch(attrib)
-	if style == nil {
-		return ""
-	}
-	height = rxNaturalHeight.FindStringSubmatch(style[1])
-	if height != nil {
-		return height[1]
+	if value, ok := style["--en-naturalHeight"]; ok {
+		return value
 	}
 	return ""
 }
@@ -145,21 +191,20 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 			break
 		}
 		buffer.WriteString(html[:m[0]])
-		attrib := html[m[2]:m[3]]
-		hash := rxHash.FindStringSubmatch(attrib)
-
-		if hash != nil {
-			if rsc, ok := exp.Hash[hash[1]]; ok {
+		attr := parseEnMediaAttr(html[m[2]:m[3]])
+		if hash, ok := attr["hash"]; ok {
+			if rsc, ok := exp.Hash[hash]; ok {
 				imgsrc1 := imgSrc.Make(rsc)
 				switch strings.ToUpper(filepath.Ext(imgsrc1)) {
 				case ".JPG", ".JPEG", ".PNG", ".GIF":
 					fmt.Fprintf(&buffer, `<img src="%s"`, imgsrc1)
-					if w := findWidth(attrib); w != "" {
+					style := parseEnMediaStyle(attr["style"])
+					if w := findWidth(attr, style); w != "" {
 						fmt.Fprintf(&buffer, ` width="%s"`, w)
 					} else {
 						fmt.Fprintf(&buffer, ` width="%d"`, rsc.Width)
 					}
-					if h := findHeight(attrib); h != "" {
+					if h := findHeight(attr, style); h != "" {
 						fmt.Fprintf(&buffer, ` height="%s" />`, h)
 					} else {
 						fmt.Fprintf(&buffer, ` height="%d" />`, rsc.Height)
