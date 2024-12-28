@@ -197,7 +197,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 				imgsrc1 := imgSrc.Make(rsc)
 				switch strings.ToUpper(filepath.Ext(imgsrc1)) {
 				case ".JPG", ".JPEG", ".PNG", ".GIF":
-					fmt.Fprintf(&buffer, `<img src="%s"`, imgsrc1)
+					fmt.Fprintf(&buffer, `<a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
 					style := parseEnMediaStyle(attr["style"])
 					if w := findWidth(attr, style); w != "" {
 						fmt.Fprintf(&buffer, ` width="%s"`, w)
@@ -205,10 +205,11 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 						fmt.Fprintf(&buffer, ` width="%d"`, rsc.Width)
 					}
 					if h := findHeight(attr, style); h != "" {
-						fmt.Fprintf(&buffer, ` height="%s" />`, h)
+						fmt.Fprintf(&buffer, ` height="%s"`, h)
 					} else {
-						fmt.Fprintf(&buffer, ` height="%d" />`, rsc.Height)
+						fmt.Fprintf(&buffer, ` height="%d"`, rsc.Height)
 					}
+					fmt.Fprintf(&buffer, ` /></a>`)
 				default:
 					fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
 						imgsrc1,
