@@ -1,5 +1,9 @@
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
+v0.3.0
+======
+Dec 29, 2024
+
 - ([#2]) Do not rename filenames as possible
     - ([#2]-2) Do not append serial-numbers to filenames unless filenames are duplicated
     - ([#2]-3) Do not replace SPACE to UNDERSCORE
