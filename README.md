@@ -1,10 +1,15 @@
-[![GoDoc](https://godoc.org/github.com/hymkor/go-enex?status.svg)](https://godoc.org/github.com/hymkor/go-enex)
+[![GoDoc](https://godoc.org/github.com/hymkor/go-enex?status.svg)](https://pkg.go.dev/github.com/hymkor/go-enex)
 
-go-enex - Convert Evernote's export file(\*.enex) into HTML and images
-==================================================
+go-enex (unenex)
+================
 
-How to use executable (unenex)
--------------------------
+Convert Evernote's export file(\*.enex) into HTML and images.
+
+- `go-enex` : the package for Go
+- `unenex` : the executable using go-enex
+
+How to use executable
+---------------------
 
 ### Install
 
