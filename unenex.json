@@ -1,6 +1,6 @@
 {
     "version": "0.2.1",
-    "description": "Convert Evernote's export file(*.enex) into HTML and images",
+    "description": "Convert Evernote's export file(*.enex) into HTML and images (unenex)",
     "homepage": "https://github.com/hymkor/go-enex",
     "license": "MIT License",
     "architecture": {
