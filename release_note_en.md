@@ -1,5 +1,11 @@
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
+- Fix: the link text for the attachment was encoded as URL that should not [#2]
+- Attachments without file names are now given the link text `(Untitled Attachment)`.
+- Resolved an issue where generating attachments without file names would fail by assigning substitute file names like `Untitled`, `Untitled (2)`.
+- Changed the method for determining whether an attachment is an image from relying on the file name to using the MIME type.
+- File names that differ only in uppercase or lowercase letters are now considered to be duplicates.
+
 v0.3.0
 ======
 Dec 29, 2024
