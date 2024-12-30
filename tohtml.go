@@ -195,8 +195,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 		if hash, ok := attr["hash"]; ok {
 			if rsc, ok := exp.Hash[hash]; ok {
 				imgsrc1 := imgSrc.Make(rsc)
-				switch strings.ToUpper(filepath.Ext(imgsrc1)) {
-				case ".JPG", ".JPEG", ".PNG", ".GIF":
+				if strings.HasPrefix(strings.ToLower(rsc.Mime), "image") {
 					fmt.Fprintf(&buffer, `<a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
 					style := parseEnMediaStyle(attr["style"])
 					if w := findWidth(attr, style); w != "" {
@@ -210,7 +209,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 						fmt.Fprintf(&buffer, ` height="%d"`, rsc.Height)
 					}
 					fmt.Fprintf(&buffer, ` /></a>`)
-				default:
+				} else {
 					text := rsc.FileName
 					if text == "" {
 						text = "(Untitled Attachment)"
