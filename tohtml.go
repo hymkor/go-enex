@@ -124,10 +124,11 @@ func (s SerialNo) ToUniqName(name string, index int) string {
 	if name == "" {
 		name = "Untitled"
 	}
-	indexList, ok := s[name]
+	uname := strings.ToUpper(name)
+	indexList, ok := s[uname]
 	if !ok {
 		// New table and no need to rename
-		s[name] = []int{index}
+		s[uname] = []int{index}
 		return name
 	}
 	serial := slices.Index(indexList, index)
@@ -139,7 +140,7 @@ func (s SerialNo) ToUniqName(name string, index int) string {
 		// Count-up and update table is required
 		indexList = append(indexList, index)
 		serial = len(indexList)
-		s[name] = indexList
+		s[uname] = indexList
 	}
 	ext := path.Ext(name)
 	base := name[:len(name)-len(ext)]
