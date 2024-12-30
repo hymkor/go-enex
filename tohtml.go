@@ -211,9 +211,13 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 					}
 					fmt.Fprintf(&buffer, ` /></a>`)
 				default:
+					text := rsc.FileName
+					if text == "" {
+						text = "(Untitled Attachment)"
+					}
 					fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
 						imgsrc1,
-						filepath.Base(imgsrc1))
+						text)
 				}
 			} else {
 				fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
