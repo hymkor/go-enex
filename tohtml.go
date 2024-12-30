@@ -121,6 +121,9 @@ var ToSafe = strings.NewReplacer(
 type SerialNo map[string][]int
 
 func (s SerialNo) ToUniqName(name string, index int) string {
+	if name == "" {
+		name = "Untitled"
+	}
 	indexList, ok := s[name]
 	if !ok {
 		// New table and no need to rename
