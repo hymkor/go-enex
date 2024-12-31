@@ -137,7 +137,7 @@ func mains(args []string) error {
 		for fname, data := range imgSrc.Images {
 			dir := filepath.Dir(fname)
 			if stat, err := os.Stat(dir); os.IsNotExist(err) {
-				fmt.Fprintln(os.Stderr, "Create Dir", dir)
+				fmt.Fprintln(os.Stderr, "Create Dir:", dir)
 				if err := os.Mkdir(dir, 0755); err != nil {
 					return err
 				}
@@ -146,7 +146,7 @@ func mains(args []string) error {
 			} else if !stat.IsDir() {
 				return fmt.Errorf("Can not mkdir %s because the file same name already exists", dir)
 			}
-			fmt.Fprint(os.Stderr, "Create File:", fname)
+			fmt.Fprint(os.Stderr, "Create File: ", fname)
 			fd, err := os.Create(fname)
 			if err != nil {
 				fmt.Fprintln(os.Stderr)
