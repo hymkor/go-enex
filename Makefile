@@ -15,13 +15,13 @@ GOOPT=-ldflags "-s -w -X main.version=$(VERSION)"
 EXT=$(shell go env GOEXE)
 
 all:
-	go fmt
+	go fmt ./...
 	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
-	$(foreach I,$(wildcard cmd/*),go fmt -C $(I) && $(SET) "CGO_ENABLED=0" && go build -C $(I) -o $(CURDIR) $(GOOPT) && ) echo OK
+	$(foreach I,$(wildcard cmd/*),$(SET) "CGO_ENABLED=0" && go build -C $(I) -o $(CURDIR) $(GOOPT) && ) echo OK
 
 _dist:
 	$(MAKE) all
-	zip $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip $(NAME)$(EXT)
+	zip $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip unenex$(EXT) exstyle$(EXT)
 
 dist:
 	$(SET) "GOOS=linux"   && $(SET) "GOARCH=386"   && $(MAKE) _dist
