@@ -21,7 +21,7 @@ Since Evernote's stylesheet is copyrighted material owned by Evernote Corporatio
 
 v0.3.1
 ======
-Dec 20, 2024
+Dec 30, 2024
 
 - Fix: the link text for the attachment was encoded as URL that should not [#2]
 - Attachments without file names are now given the link text `(Untitled Attachment)`.
