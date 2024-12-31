@@ -1,5 +1,9 @@
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
+v0.3.2
+======
+Dec 31, 2024
+
 ## Specifying Style-Sheets
 
 - Added support for loading file data as a stylesheet with the `-sf` option.
