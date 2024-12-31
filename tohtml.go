@@ -99,9 +99,18 @@ var ToSafe = strings.NewReplacer(
 
 type SerialNo map[string][]int
 
-func (s SerialNo) ToUniqName(name string, index int) string {
+func (s SerialNo) ToUniqName(mime, name string, index int) string {
 	if name == "" {
-		name = "Untitled"
+		mainType, subType, _ := strings.Cut(mime, "/")
+		if strings.EqualFold(mainType, "image") {
+			if subType == "jpeg" {
+				name = "image.jpg"
+			} else {
+				name = "image." + subType
+			}
+		} else {
+			name = "Evernote"
+		}
 	}
 	uname := strings.ToUpper(name)
 	indexList, ok := s[uname]
@@ -147,7 +156,7 @@ func NewImgSrc(note *Export) *ImgSrc {
 }
 
 func (imgSrc *ImgSrc) Make(rsc *Resource) string {
-	name := ToSafe.Replace(imgSrc.serialNo.ToUniqName(rsc.FileName, rsc.Index))
+	name := ToSafe.Replace(imgSrc.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Index))
 	imgSrc.Images[filepath.Join(imgSrc.Dir, name)] = rsc
 	return path.Join(imgSrc.dirEscape, url.PathEscape(name))
 }
