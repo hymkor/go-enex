@@ -117,9 +117,8 @@ func (s SerialNo) ToUniqName(name string, index int) string {
 	}
 	if serial < 0 {
 		// Count-up and update table is required
-		indexList = append(indexList, index)
 		serial = len(indexList)
-		s[uname] = indexList
+		s[uname] = append(indexList, index)
 	}
 	ext := path.Ext(name)
 	base := name[:len(name)-len(ext)]
