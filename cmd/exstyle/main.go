@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 type Html struct {
@@ -35,7 +37,11 @@ func mains(args []string) error {
 	if err != nil {
 		return err
 	}
-	io.WriteString(os.Stdout, htm.Style)
+	content := strings.TrimSpace(htm.Style)
+	if content == "" {
+		return errors.New("Text for StyleSheet is not found")
+	}
+	io.WriteString(os.Stdout, content)
 	return nil
 }
 
