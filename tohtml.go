@@ -71,37 +71,15 @@ func parseEnMediaAttr(s string) map[string]string {
 	return result
 }
 
-func parseEnMediaStyle(style string) map[string]string {
-	result := map[string]string{}
-	for {
-		var eq string
-		var ok bool
-		eq, style, ok = strings.Cut(style, ";")
-		if eq != "" {
-			name, value, _ := strings.Cut(eq, ":")
-			result[strings.TrimSpace(name)] = strings.TrimSpace(value)
-		}
-		if !ok {
-			return result
-		}
-	}
-}
-
-func findWidth(attr, style map[string]string) string {
+func findWidth(attr map[string]string) string {
 	if value, ok := attr["width"]; ok {
-		return value
-	}
-	if value, ok := style["--en-naturalWidth"]; ok {
 		return value
 	}
 	return ""
 }
 
-func findHeight(attr, style map[string]string) string {
+func findHeight(attr map[string]string) string {
 	if value, ok := attr["height"]; ok {
-		return value
-	}
-	if value, ok := style["--en-naturalHeight"]; ok {
 		return value
 	}
 	return ""
@@ -208,16 +186,11 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 				imgsrc1 := imgSrc.Make(rsc)
 				if strings.HasPrefix(strings.ToLower(rsc.Mime), "image") {
 					fmt.Fprintf(&buffer, `<a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
-					style := parseEnMediaStyle(attr["style"])
-					if w := findWidth(attr, style); w != "" {
+					if w := findWidth(attr); w != "" {
 						fmt.Fprintf(&buffer, ` width="%s"`, w)
-					} else {
-						fmt.Fprintf(&buffer, ` width="%d"`, rsc.Width)
 					}
-					if h := findHeight(attr, style); h != "" {
+					if h := findHeight(attr); h != "" {
 						fmt.Fprintf(&buffer, ` height="%s"`, h)
-					} else {
-						fmt.Fprintf(&buffer, ` height="%d"`, rsc.Height)
 					}
 					fmt.Fprintf(&buffer, ` /></a>`)
 				} else {
