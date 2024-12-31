@@ -2,6 +2,7 @@ package enex
 
 import (
 	"fmt"
+	htmlPkg "html"
 	"net/url"
 	"path"
 	"path/filepath"
@@ -182,7 +183,10 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 		"<html><head><meta charset=\"utf-8\">"+
 			exp.ExHeader+
 			"</head><body>"+
-			"<en-note class=\"peso\" style=\"white-space: inherit;\">\n")
+			"<en-note class=\"peso\" style=\"white-space: inherit;\">\n"+
+			`<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`+
+			htmlPkg.EscapeString(exp.Title)+
+			"</b></h1>\n")
 	html = strings.ReplaceAll(html, "</en-note>", "</en-note></body></html>\n")
 	html = rxDivBrDiv.ReplaceAllString(html, "<br/>\n")
 	html = rxDivBrDiv2.ReplaceAllString(html, "</div><div>")
