@@ -179,8 +179,11 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 	html = rxXml.ReplaceAllString(html, "")
 	html = rxDocType.ReplaceAllString(html, "<!DOCTYPE html>")
 	html = strings.ReplaceAll(html, "<en-note>",
-		"<html><head><meta charset=\"utf-8\"></head><body>\n")
-	html = strings.ReplaceAll(html, "</en-note>", "</body></html>\n")
+		"<html><head><meta charset=\"utf-8\">"+
+			exp.ExHeader+
+			"</head><body>"+
+			"<en-note class=\"peso\" style=\"white-space: inherit;\">\n")
+	html = strings.ReplaceAll(html, "</en-note>", "</en-note></body></html>\n")
 	html = rxDivBrDiv.ReplaceAllString(html, "<br/>\n")
 	html = rxDivBrDiv2.ReplaceAllString(html, "</div><div>")
 	html = rxLiDiv.ReplaceAllString(html, "<li>${1}</li>\n")

@@ -72,6 +72,7 @@ type Export struct {
 	Content  string
 	Resource map[string][]*Resource // filename to the multi resources
 	Hash     map[string]*Resource   // hash to the one resource
+	ExHeader string
 }
 
 func Parse(data []byte) (*Export, error) {

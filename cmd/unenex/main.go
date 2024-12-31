@@ -16,8 +16,9 @@ import (
 )
 
 var (
-	optionMarkdown = flag.Bool("markdown", false, "output shrink markdown")
-	optionVerbose  = flag.Bool("v", false, "verbose")
+	optionMarkdown  = flag.Bool("markdown", false, "output shrink markdown")
+	optionVerbose   = flag.Bool("v", false, "verbose")
+	optionStyleFile = flag.String("sf", "", "stylesheet-file")
 )
 
 func mains(args []string) error {
@@ -27,6 +28,19 @@ func mains(args []string) error {
 	verbose := io.Discard
 	if *optionVerbose {
 		verbose = os.Stderr
+	}
+	var styleSheet string
+	if *optionStyleFile != "" {
+		var buffer strings.Builder
+		fd, err := os.Open(*optionStyleFile)
+		if err != nil {
+			return err
+		}
+		buffer.WriteString("<style>\n")
+		io.Copy(&buffer, fd)
+		buffer.WriteString("\n</style>\n")
+		styleSheet = buffer.String()
+		fd.Close()
 	}
 
 	var exports []*enex.Export
@@ -60,6 +74,9 @@ func mains(args []string) error {
 			}
 			exports = append(exports, _exports...)
 		}
+	}
+	for _, x := range exports {
+		x.ExHeader = styleSheet
 	}
 	var index *os.File
 	if *optionMarkdown {
