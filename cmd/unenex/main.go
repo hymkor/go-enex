@@ -92,7 +92,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		fmt.Fprintln(index, `<html lang="ja"><head>`)
+		fmt.Fprintln(index, `<html><head>`)
 		fmt.Fprintln(index, `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">`)
 		fmt.Fprintln(index, `</head><body><ul>`)
 		defer func() {
