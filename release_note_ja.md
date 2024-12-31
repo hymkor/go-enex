@@ -1,5 +1,24 @@
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
+## スタイルシート指定
+
+- `-sf` でファイルのデータをスタイルシートとして読み込めるようにした
+- Evernote デスクトップクライアントで直接エクスポートされたHTMLファイルからスタイルシートだけを抽出するツール `exstyle` を用意した(`-sf`用)
+
+Evernote のスタイルシートは、Evernote社の著作物であるため、本ツールに添付することができない。そのため、もし本物により近い表現にしたい場合、ユーザ各位にてスタイルシートを次の手順で取り出していただく必要がある。
+
+1. Evernote のデスクトップクライアントで、適当なページを HTML 形式でエクスポートする
+2. エクスポートされた HTML からスタイルシートのみを抽出する  
+    `exstyle some-directly-exported.html > common-enex.css`
+3. 以後、unenex を使う時、そのスタイルシートを使うよう指定するようにする  
+    `unenex -sf common-enex.css source.enex`
+
+## その他の修正
+
+- ノート名を `<h1>` タグで冒頭に挿入するようにした
+- 画像のサイズ指定で、画像の原寸や `<en-media>` タグの`--naturalWidth`, `--naturalHeight` の値を使用するのをやめた
+- ログメッセージで `Create xxxx` の後には必ず `: ` を入れるようにした
+
 v0.3.1
 ======
 Dec 20, 2024

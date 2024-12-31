@@ -1,5 +1,24 @@
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
+## Specifying Style-Sheets
+
+- Added support for loading file data as a stylesheet with the `-sf` option.
+- Added a tool called `exstyle` to extract only the stylesheet from HTML files directly exported by the Evernote desktop client (for use with `-sf`).
+
+Since Evernote's stylesheet is copyrighted material owned by Evernote Corporation, it cannot be included with this tool. Therefore, if you wish to achieve a representation closer to the original, you will need to extract the stylesheet themselves using the following steps:
+
+1. Use the Evernote desktop client to export any page in HTML format.
+2. Extract only the stylesheet from the exported HTML using:  
+    `exstyle some-directly-exported.html > common-enex.css`
+3. Specify the extracted stylesheet when using `unenex` from now on:  
+    `unenex -sf common-enex.css source.enex`
+
+## Miscellaneous
+
+- Inserted the note title at the beginning using the `<h1>` tag.
+- Stopped using the original size of images or the values of `--naturalWidth` and `--naturalHeight` from the `<en-media>` tag for specifying image dimensions.
+- Fix: Insert `: ` always after `Create xxxx` on log message
+
 v0.3.1
 ======
 Dec 20, 2024
