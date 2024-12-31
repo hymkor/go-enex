@@ -41,14 +41,15 @@ type xmlNote struct {
 }
 
 type Resource struct {
-	data      string
-	Mime      string
-	SourceUrl string
-	Hash      string
-	Index     int
-	FileName  string
-	Width     int
-	Height    int
+	data        string
+	Mime        string
+	SourceUrl   string
+	Hash        string
+	Index       int
+	FileName    string
+	Width       int
+	Height      int
+	NewFileName string
 }
 
 func (rsc *Resource) DataBeforeDecoded() string {

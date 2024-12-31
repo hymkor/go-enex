@@ -157,6 +157,7 @@ func NewImgSrc(note *Export) *ImgSrc {
 
 func (imgSrc *ImgSrc) Make(rsc *Resource) string {
 	name := ToSafe.Replace(imgSrc.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Index))
+	rsc.NewFileName = name
 	imgSrc.Images[filepath.Join(imgSrc.Dir, name)] = rsc
 	return path.Join(imgSrc.dirEscape, url.PathEscape(name))
 }
@@ -202,13 +203,9 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 					}
 					fmt.Fprintf(&buffer, ` /></a>`)
 				} else {
-					text := rsc.FileName
-					if text == "" {
-						text = "(Untitled Attachment)"
-					}
 					fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
 						imgsrc1,
-						text)
+						rsc.NewFileName)
 				}
 			} else {
 				fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
