@@ -13,14 +13,9 @@ import (
 )
 
 var (
-	rxXml         = regexp.MustCompile(`\s*<\?xml[^>]*>\s*`)
-	rxDocType     = regexp.MustCompile(`(?s)\s*<!DOCTYPE[^>]*>\s*`)
-	rxDivBrDiv    = regexp.MustCompile(`(?s)<div>\s*<br\s*/>\s*</div>`)
-	rxDivBrDiv2   = regexp.MustCompile(`(?s)</div>\s*<br\s*/>\s*<div>`)
-	rxLiDiv       = regexp.MustCompile(`(?s)<li>\s*<div>([^<>]*)</div>\s*</li>`)
-	rxBrSomething = regexp.MustCompile(`(?s)<br\s*/>\s*(<(?:(?:div)|(?:ol)|(?:ul)))`)
-	rxMedia       = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
-	rxEnds        = regexp.MustCompile(`(?s)</(?:(?:div)|(?:p))>`)
+	rxXml     = regexp.MustCompile(`\s*<\?xml[^>]*>\s*`)
+	rxDocType = regexp.MustCompile(`(?s)\s*<!DOCTYPE[^>]*>\s*`)
+	rxMedia   = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
 )
 
 func parseEnMediaAttr(s string) map[string]string {
@@ -175,11 +170,6 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 			htmlPkg.EscapeString(exp.Title)+
 			"</b></h1>\n")
 	html = strings.ReplaceAll(html, "</en-note>", "</en-note></body></html>\n")
-	html = rxDivBrDiv.ReplaceAllString(html, "<br/>\n")
-	html = rxDivBrDiv2.ReplaceAllString(html, "</div><div>")
-	html = rxLiDiv.ReplaceAllString(html, "<li>${1}</li>\n")
-	html = rxBrSomething.ReplaceAllString(html, `${1}`)
-	html = rxEnds.ReplaceAllString(html, "${0}\n")
 
 	var buffer strings.Builder
 	for {
