@@ -113,7 +113,7 @@ func mains(args []string) error {
 		if *optionMarkdown {
 			fmt.Fprintf(index, "* [%s](%s)\n",
 				note.Title,
-				url.QueryEscape(safeName+".md"),
+				url.PathEscape(safeName+".md"),
 			)
 		} else {
 			fmt.Fprintf(index, "<li><a href=\"%s\">%s</a></li>\n",
