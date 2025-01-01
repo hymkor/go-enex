@@ -120,8 +120,8 @@ func enexToMarkdown(name string, source []byte, styleSheet string, verbose io.Wr
 }
 
 const indexHtmlHeader = `<html><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-</head><body><ul>`
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head><body>`
 
 const indexHtmlFooter = "</body></html>"
 
@@ -261,7 +261,7 @@ func mains(args []string) error {
 			fmt.Fprintf(fd, "- [%s](%s/README.md)\n",
 				enexName, url.PathEscape(enexName))
 		} else {
-			fmt.Fprintf(fd, "<li><a href=\"%s/index.html\">%s</a>\n",
+			fmt.Fprintf(fd, "<li><a href=\"%s/index.html\">%s</a></li>\n",
 				url.PathEscape(enexName), enexName)
 		}
 	}
