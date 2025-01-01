@@ -22,6 +22,22 @@ var (
 	optionStyleInline = flag.String("st", "", "Specify stylesheet text directly as a string.")
 )
 
+func makeAndChdir(name string) (func(), error) {
+	if name == "" {
+		return func() {}, nil
+	}
+	if _, err := os.Stat(name); os.IsNotExist(err) {
+		fmt.Fprintln(os.Stderr, "Create Dir:", name)
+		if err := os.Mkdir(name, 0755); err != nil {
+			return nil, err
+		}
+	}
+	if err := os.Chdir(name); err != nil {
+		return nil, err
+	}
+	return func() { os.Chdir("..") }, nil
+}
+
 func extractAttachment(attachment map[string]*enex.Resource) error {
 	for fname, data := range attachment {
 		dir := filepath.Dir(fname)
@@ -60,6 +76,12 @@ func enexToMarkdown(name string, source []byte, styleSheet string, verbose io.Wr
 	if err != nil {
 		return err
 	}
+	closer, err := makeAndChdir(name)
+	if err != nil {
+		return err
+	}
+	defer closer()
+
 	index, err := os.Create("README.md")
 	if err != nil {
 		return err
@@ -98,6 +120,12 @@ func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer
 	if err != nil {
 		return err
 	}
+	closer, err := makeAndChdir(name)
+	if err != nil {
+		return err
+	}
+	defer closer()
+
 	index, err := os.Create("index.html")
 	if err != nil {
 		return err
@@ -173,7 +201,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := outfunc("enex", source, "", verbose); err != nil {
+		if err := outfunc("", source, "", verbose); err != nil {
 			return err
 		}
 	} else {
@@ -190,7 +218,9 @@ func mains(args []string) error {
 			if err != nil {
 				return err
 			}
-			if err := outfunc(arg, data, styleSheet, verbose); err != nil {
+			enexName := filepath.Base(arg)
+			enexName = enexName[:len(enexName)-len(filepath.Ext(enexName))]
+			if err := outfunc(enexName, data, styleSheet, verbose); err != nil {
 				return err
 			}
 		}
