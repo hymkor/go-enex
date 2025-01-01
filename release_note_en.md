@@ -1,6 +1,8 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
----
+v0.3.3
+======
+Jan 1, 2024
 
 - unenex: Removed `lang="ja"` from the `<html>` tag in index.html.
 - exstyle: Display an error if no stylesheets are found in the given HTML.
