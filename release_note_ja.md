@@ -1,5 +1,10 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+- 生成データは (ルート) → (enexファイル名ディレクトリ) → (ノート名の添付ファイル置き場用ディレクトリ) と3階層のディレクトリに格納するようにした。
+    - enexファイル名が与えられず、標準入力から enexファイルデータを受けとった時は、(ルート) → (ノート名ディレクトリ) だけの2階層とする
+    - ルートには各enexファイル名ディレクトリの index.html or README.md へのリンクをリストした index.html or README.md を置くようにした。
+    - 各enexファイル名ディレクトリの index.html or README.md には enex ファイル名の大見出しを入れるようにした。
+
 v0.3.3
 ======
 Jan 1, 2024
