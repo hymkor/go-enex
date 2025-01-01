@@ -115,6 +115,12 @@ func enexToMarkdown(name string, source []byte, styleSheet string, verbose io.Wr
 	return nil
 }
 
+const indexHtmlHeader = `<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head><body><ul>`
+
+const indexHtmlFooter = "</ul></body></html>"
+
 func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer) error {
 	exports, err := enex.ParseMulti(source, verbose)
 	if err != nil {
@@ -130,11 +136,9 @@ func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer
 	if err != nil {
 		return err
 	}
-	fmt.Fprintln(index, `<html><head>`)
-	fmt.Fprintln(index, `<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">`)
-	fmt.Fprintln(index, `</head><body><ul>`)
+	fmt.Fprintln(index, indexHtmlHeader)
 	defer func() {
-		fmt.Fprintln(index, "</ul></body></html>")
+		fmt.Fprintln(index)
 		index.Close()
 	}()
 
@@ -204,25 +208,50 @@ func mains(args []string) error {
 		if err := outfunc("", source, "", verbose); err != nil {
 			return err
 		}
-	} else {
-		_args := []string{}
-		for _, arg := range args {
-			if matches, err := filepath.Glob(arg); err == nil && len(matches) >= 1 {
-				_args = append(_args, matches...)
-			} else {
-				_args = append(_args, arg)
-			}
+		return nil
+	}
+	_args := []string{}
+	for _, arg := range args {
+		if matches, err := filepath.Glob(arg); err == nil && len(matches) >= 1 {
+			_args = append(_args, matches...)
+		} else {
+			_args = append(_args, arg)
 		}
-		for _, arg := range _args {
-			data, err = os.ReadFile(arg)
-			if err != nil {
-				return err
-			}
-			enexName := filepath.Base(arg)
-			enexName = enexName[:len(enexName)-len(filepath.Ext(enexName))]
-			if err := outfunc(enexName, data, styleSheet, verbose); err != nil {
-				return err
-			}
+	}
+	var fd *os.File
+	if *optionMarkdown {
+		fd, err = os.Create("README.md")
+		if err != nil {
+			return err
+		}
+		defer fd.Close()
+	} else {
+		fd, err = os.Create("index.html")
+		if err != nil {
+			return err
+		}
+		fmt.Fprintln(fd, indexHtmlHeader)
+		defer func() {
+			fmt.Fprintln(fd, indexHtmlFooter)
+			fd.Close()
+		}()
+	}
+	for _, arg := range _args {
+		data, err = os.ReadFile(arg)
+		if err != nil {
+			return err
+		}
+		enexName := filepath.Base(arg)
+		enexName = enexName[:len(enexName)-len(filepath.Ext(enexName))]
+		if err := outfunc(enexName, data, styleSheet, verbose); err != nil {
+			return err
+		}
+		if *optionMarkdown {
+			fmt.Fprintf(fd, "- [%s](%s/README.md)\n",
+				enexName, url.PathEscape(enexName))
+		} else {
+			fmt.Fprintf(fd, "<li><a href=\"%s/index.html\">%s</a>\n",
+				url.PathEscape(enexName), enexName)
 		}
 	}
 	return nil
