@@ -6,9 +6,10 @@
     - The link text for non-image files is now the actual saved filename instead of `(Untitled Attachment)`.
 - Sequential numbering for duplicate filenames now starts from (1).
 - Removed code that shortened HTML by eliminating tags like `</div><div>`.
-- unenex: Add the `-st` option to specify the stylesheet text inline.
-    e.g., `unenex.exe -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)
-    or    `unenex.exe -st 'div{line-height:2.0!important}' *.enex` (bash)
+- unenex: Add the `-st` option to specify the stylesheet text inline.  
+    e.g., `unenex -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)  
+    or    `unenex -st 'div{line-height:2.0!important}' *.enex` (bash)
+- unenex -markdown: `%20` is used instead of `+` for SPACE on URL of README.md
 
 [#2]: https://github.com/hymkor/go-enex/issues/2
 

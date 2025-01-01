@@ -8,8 +8,9 @@
 - 同じファイル名につける通し番号は (1) から始めるようにした
 - `</div><div>` を削除するなどのHTMLを短くするコードを削除
 - unenex: スタイルシートをインラインで指定するオプション `-st` を追加  
-    例: `unenex.exe -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)
-    or  `unenex.exe -st 'div{line-height:2.0!important}' *.enex` (bash)
+    例: `unenex -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)  
+    or  `unenex -st 'div{line-height:2.0!important}' *.enex` (bash)
+- unenex -markdown: README.md に記す URL で空白を表現する `+` のかわりに `%20` を使うようにした
 
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
