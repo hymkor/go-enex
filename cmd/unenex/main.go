@@ -177,14 +177,11 @@ func mains(args []string) error {
 var version string
 
 func main() {
-	flag.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "%s %s-%s-%s\n",
-			filepath.Base(os.Args[0]),
-			version,
-			runtime.GOOS,
-			runtime.GOARCH)
-		flag.PrintDefaults()
-	}
+	fmt.Fprintf(flag.CommandLine.Output(), "%s %s-%s-%s\n",
+		filepath.Base(os.Args[0]),
+		version,
+		runtime.GOOS,
+		runtime.GOARCH)
 	flag.Parse()
 	if err := mains(flag.Args()); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
