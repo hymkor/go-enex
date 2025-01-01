@@ -88,6 +88,10 @@ func enexToMarkdown(name string, source []byte, styleSheet string, verbose io.Wr
 	}
 	defer index.Close()
 
+	if name != "" {
+		fmt.Fprintf(index, "# %s\n\n", name)
+	}
+
 	for _, note := range exports {
 		safeName := enex.ToSafe.Replace(note.Title)
 
@@ -119,7 +123,7 @@ const indexHtmlHeader = `<html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head><body><ul>`
 
-const indexHtmlFooter = "</ul></body></html>"
+const indexHtmlFooter = "</body></html>"
 
 func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer) error {
 	exports, err := enex.ParseMulti(source, verbose)
@@ -137,8 +141,13 @@ func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer
 		return err
 	}
 	fmt.Fprintln(index, indexHtmlHeader)
+	if name != "" {
+		fmt.Fprintf(index, "<h1>%s</h1>\n\n", name)
+	}
+	fmt.Fprintln(index, "<ul>")
 	defer func() {
-		fmt.Fprintln(index)
+		fmt.Fprintln(index, "</ul>")
+		fmt.Fprintln(index, indexHtmlFooter)
 		index.Close()
 	}()
 
@@ -231,7 +240,9 @@ func mains(args []string) error {
 			return err
 		}
 		fmt.Fprintln(fd, indexHtmlHeader)
+		fmt.Fprintln(fd, "<ul>")
 		defer func() {
+			fmt.Fprintln(fd, "</ul>")
 			fmt.Fprintln(fd, indexHtmlFooter)
 			fd.Close()
 		}()
