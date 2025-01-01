@@ -124,3 +124,6 @@ func main() {
     }
 }
 ```
+
+- [ReleaseNote(en)](release_note_en.md)
+- [ReleaseNote(ja)](release_note_ja.md)

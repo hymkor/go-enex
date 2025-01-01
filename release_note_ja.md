@@ -1,3 +1,7 @@
+[Top](./README.md) / [English](./release_note_en.md) / Japanese
+
+---
+
 - unenex: `index.html` の `<html>` タグより `lang="ja"` を削除
 - exstyle: 与えられたHTML中にスタイルシートが見付からなかった時、エラーを表示
 - ファイル名のない添付ファイルについて

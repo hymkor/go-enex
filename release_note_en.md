@@ -1,3 +1,7 @@
+[Top](./README.md) / English / [Japanese](./release_note_ja.md)
+
+---
+
 - unenex: Removed `lang="ja"` from the `<html>` tag in index.html.
 - exstyle: Display an error if no stylesheets are found in the given HTML.
 - For attachments without filenames:
