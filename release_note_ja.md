@@ -1,3 +1,16 @@
+- unenex: `index.html` の `<html>` タグより `lang="ja"` を削除
+- exstyle: 与えられたHTML中にスタイルシートが見付からなかった時、エラーを表示
+- ファイル名のない添付ファイルについて
+    - 画像ファイルは `image.png` (拡張子はMIME型より選定) という名前で保存
+    - 非画像ファイルは `Evernote` という名前で保存
+    - 非画像ファイルのリンクテキストは `(Untitled Attachment)` ではなく、
+      実際の保存ファイル名とした
+- 同じファイル名につける通し番号は (1) から始めるようにした
+- `</div><div>` を削除するなどのHTMLを短くするコードを削除
+- unenex: スタイルシートをインラインで指定するオプション `-st` を追加  
+    例: `unenex.exe -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)
+    or  `unenex.exe -st 'div{line-height:2.0!important}' *.enex` (bash)
+
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
 v0.3.2

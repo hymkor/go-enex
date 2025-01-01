@@ -1,3 +1,15 @@
+- unenex: Removed `lang="ja"` from the `<html>` tag in index.html.
+- exstyle: Display an error if no stylesheets are found in the given HTML.
+- For attachments without filenames:
+    - Image files are saved with names like `image.png` (the extension is determined by the MIME type).
+    - Non-image files are saved with the name `Evernote`.
+    - The link text for non-image files is now the actual saved filename instead of `(Untitled Attachment)`.
+- Sequential numbering for duplicate filenames now starts from (1).
+- Removed code that shortened HTML by eliminating tags like `</div><div>`.
+- unenex: Add the `-st` option to specify the stylesheet text inline.
+    e.g., `unenex.exe -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)
+    or    `unenex.exe -st 'div{line-height:2.0!important}' *.enex` (bash)
+
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
 v0.3.2
