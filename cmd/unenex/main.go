@@ -22,29 +22,28 @@ var (
 	optionStyleInline = flag.String("st", "", "Specify stylesheet text directly as a string.")
 )
 
-func makeAndChdir(name string, log io.Writer) (func(), error) {
+func makeDir(root, name string, log io.Writer) error {
 	if name == "" {
-		return func() {}, nil
+		return nil
 	}
+	name = filepath.Join(root, name)
 	if stat, err := os.Stat(name); err != nil {
 		if !os.IsNotExist(err) {
-			return func() {}, err
+			return err
 		}
 		fmt.Fprintln(log, "Create Dir:", name)
 		if err := os.Mkdir(name, 0755); err != nil {
-			return nil, err
+			return err
 		}
 	} else if !stat.IsDir() {
-		return nil, fmt.Errorf("%s: fail to mkdir (file exists)", name)
+		return fmt.Errorf("%s: fail to mkdir (file exists)", name)
 	}
-	if err := os.Chdir(name); err != nil {
-		return nil, err
-	}
-	return func() { os.Chdir("..") }, nil
+	return nil
 }
 
-func extractAttachment(attachment map[string]*enex.Resource, log io.Writer) error {
-	for fname, data := range attachment {
+func extractAttachment(root string, attachment map[string]*enex.Resource, log io.Writer) error {
+	for _fname, data := range attachment {
+		fname := filepath.Join(root, _fname)
 		dir := filepath.Dir(fname)
 		if stat, err := os.Stat(dir); os.IsNotExist(err) {
 			fmt.Fprintln(log, "Create Dir:", dir)
@@ -76,25 +75,25 @@ func extractAttachment(attachment map[string]*enex.Resource, log io.Writer) erro
 	return nil
 }
 
-func enexToMarkdown(name string, source []byte, styleSheet string, verbose io.Writer) error {
+func enexToMarkdown(root, enexName string, source []byte, styleSheet string, verbose io.Writer) error {
 	exports, err := enex.ParseMulti(source, verbose)
 	if err != nil {
 		return err
 	}
-	closer, err := makeAndChdir(name, os.Stderr)
+	err = makeDir(root, enexName, os.Stderr)
 	if err != nil {
 		return err
 	}
-	defer closer()
+	root = filepath.Join(root, enexName)
 
-	index, err := os.Create("README.md")
+	index, err := os.Create(filepath.Join(root, "README.md"))
 	if err != nil {
 		return err
 	}
 	defer index.Close()
 
-	if name != "" {
-		fmt.Fprintf(index, "# %s\n\n", name)
+	if enexName != "" {
+		fmt.Fprintf(index, "# %s\n\n", enexName)
 	}
 
 	for _, note := range exports {
@@ -109,15 +108,16 @@ func enexToMarkdown(name string, source []byte, styleSheet string, verbose io.Wr
 
 		var markdown strings.Builder
 		godown.Convert(&markdown, strings.NewReader(html), nil)
-		fd, err := os.Create(safeName + ".md")
+		fname := filepath.Join(root, safeName+".md")
+		fd, err := os.Create(fname)
 		if err != nil {
 			return err
 		}
 		enex.ShrinkMarkdown(strings.NewReader(markdown.String()), fd)
 		fd.Close()
-		fmt.Println("Create File:", safeName+".md")
+		fmt.Fprintln(os.Stderr, "Create File:", fname)
 
-		if err := extractAttachment(imgSrc.Images, os.Stderr); err != nil {
+		if err := extractAttachment(root, imgSrc.Images, os.Stderr); err != nil {
 			return err
 		}
 	}
@@ -130,24 +130,24 @@ const indexHtmlHeader = `<html><head>
 
 const indexHtmlFooter = "</body></html>"
 
-func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer) error {
+func enexToHtml(root, enexName string, source []byte, styleSheet string, verbose io.Writer) error {
 	exports, err := enex.ParseMulti(source, verbose)
 	if err != nil {
 		return err
 	}
-	closer, err := makeAndChdir(name, os.Stderr)
+	err = makeDir(root, enexName, os.Stderr)
 	if err != nil {
 		return err
 	}
-	defer closer()
+	root = filepath.Join(root, enexName)
 
-	index, err := os.Create("index.html")
+	index, err := os.Create(filepath.Join(root, "index.html"))
 	if err != nil {
 		return err
 	}
 	fmt.Fprintln(index, indexHtmlHeader)
-	if name != "" {
-		fmt.Fprintf(index, "<h1>%s</h1>\n\n", name)
+	if enexName != "" {
+		fmt.Fprintf(index, "<h1>%s</h1>\n\n", enexName)
 	}
 	fmt.Fprintln(index, "<ul>")
 	defer func() {
@@ -166,15 +166,16 @@ func enexToHtml(name string, source []byte, styleSheet string, verbose io.Writer
 			note.Title,
 		)
 		html, imgSrc := note.HtmlAndDir()
-		fd, err := os.Create(safeName + ".html")
+		fname := filepath.Join(root, safeName+".html")
+		fd, err := os.Create(fname)
 		if err != nil {
 			return err
 		}
 		io.WriteString(fd, html)
 		fd.Close()
-		fmt.Println("Create File:", safeName+".html")
+		fmt.Println("Create File:", fname)
 
-		if err := extractAttachment(imgSrc.Images, os.Stderr); err != nil {
+		if err := extractAttachment(root, imgSrc.Images, os.Stderr); err != nil {
 			return err
 		}
 	}
@@ -219,7 +220,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := outfunc("", source, "", verbose); err != nil {
+		if err := outfunc(".", "", source, "", verbose); err != nil {
 			return err
 		}
 		return nil
@@ -259,7 +260,7 @@ func mains(args []string) error {
 		}
 		enexName := filepath.Base(arg)
 		enexName = enexName[:len(enexName)-len(filepath.Ext(enexName))]
-		if err := outfunc(enexName, data, styleSheet, verbose); err != nil {
+		if err := outfunc(".", enexName, data, styleSheet, verbose); err != nil {
 			return err
 		}
 		if *optionMarkdown {
