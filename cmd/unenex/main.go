@@ -18,9 +18,9 @@ import (
 var (
 	optionMarkdown    = flag.Bool("markdown", false, "output shrink markdown")
 	optionVerbose     = flag.Bool("v", false, "verbose")
-	optionStyleFile   = flag.String("sf", "", "Specify a stylesheet file")
-	optionStyleInline = flag.String("st", "", "Specify stylesheet text directly as a string.")
-	optionRootDir     = flag.String("d", ".", "Output directory")
+	optionStyleFile   = flag.String("sf", "", "Specify a stylesheet file `path`")
+	optionStyleInline = flag.String("st", "", "Specify `stylesheet` text directly as a string.")
+	optionRootDir     = flag.String("d", ".", "Output `directory`")
 )
 
 func makeDir(root, name string, log io.Writer) error {
