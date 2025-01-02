@@ -4,6 +4,7 @@
     - If no ENEX file name is provided and ENEX data is received from standard input, the structure will be limited to two levels: (root) → (directory named after the note).
     - A index.html or README.md file is placed in the root directory, listing links to the index.html or README.md files in each ENEX file's directory.
     - Each index.html or README.md in the ENEX file directories includes a heading with the ENEX file name.
+- Added the `-d DIR` option to specify the directory for file output.
 
 v0.3.3
 ======
