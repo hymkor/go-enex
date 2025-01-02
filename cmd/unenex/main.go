@@ -20,6 +20,7 @@ var (
 	optionVerbose     = flag.Bool("v", false, "verbose")
 	optionStyleFile   = flag.String("sf", "", "Specify a stylesheet file")
 	optionStyleInline = flag.String("st", "", "Specify stylesheet text directly as a string.")
+	optionRootDir     = flag.String("d", ".", "Output directory")
 )
 
 func makeDir(root, name string, log io.Writer) error {
@@ -220,7 +221,7 @@ func mains(args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := outfunc(".", "", source, "", verbose); err != nil {
+		if err := outfunc(*optionRootDir, "", source, "", verbose); err != nil {
 			return err
 		}
 		return nil
@@ -235,13 +236,13 @@ func mains(args []string) error {
 	}
 	var fd *os.File
 	if *optionMarkdown {
-		fd, err = os.Create("README.md")
+		fd, err = os.Create(filepath.Join(*optionRootDir, "README.md"))
 		if err != nil {
 			return err
 		}
 		defer fd.Close()
 	} else {
-		fd, err = os.Create("index.html")
+		fd, err = os.Create(filepath.Join(*optionRootDir, "index.html"))
 		if err != nil {
 			return err
 		}
@@ -260,7 +261,7 @@ func mains(args []string) error {
 		}
 		enexName := filepath.Base(arg)
 		enexName = enexName[:len(enexName)-len(filepath.Ext(enexName))]
-		if err := outfunc(".", enexName, data, styleSheet, verbose); err != nil {
+		if err := outfunc(*optionRootDir, enexName, data, styleSheet, verbose); err != nil {
 			return err
 		}
 		if *optionMarkdown {
