@@ -1,5 +1,9 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+v0.3.4
+======
+Jan 2, 2024
+
 - Generated data is now stored in a three-level directory structure: (root) → (directory named after the ENEX file) → (directory for attachments of each note).
     - If no ENEX file name is provided and ENEX data is received from standard input, the structure will be limited to two levels: (root) → (directory named after the note).
     - A index.html or README.md file is placed in the root directory, listing links to the index.html or README.md files in each ENEX file's directory.
