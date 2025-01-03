@@ -261,6 +261,10 @@ func mains(args []string) error {
 		}
 		enexName := filepath.Base(arg)
 		enexName = enexName[:len(enexName)-len(filepath.Ext(enexName))]
+		// enexName =~ s/\.+$//;
+		for len(enexName) > 0 && enexName[len(enexName)-1] == '.' {
+			enexName = enexName[:len(enexName)-1]
+		}
 		if err := outfunc(*optionRootDir, enexName, data, styleSheet, verbose); err != nil {
 			return err
 		}
