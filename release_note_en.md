@@ -1,5 +1,7 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+- Fixed an issue where ENEX file names ending with `..enex` caused path inconsistencies on Windows due to attempting to create a directory name ending with `.`. The trailing `.` is now removed automatically.
+
 v0.3.4
 ======
 Jan 2, 2024
