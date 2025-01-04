@@ -1,5 +1,9 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+v0.3.5
+======
+Jan 4, 2024
+
 - enexファイル名の末尾が `..enex` の時、`.` で終わるディレクトリ名を作成しようとするため、Windows ではパス名に不整合が発生する問題を修正。末尾の `.` は削除するようにした。
 
 
