@@ -1,11 +1,13 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+- 添付ファイルへリンクが独立した行になるように、タグ: `<a>..</a>` は `<div class="goenex-attachment-link">..</div>` で囲むようにした。
+- 添付画像のタグ: `<img>..</img>` は `<span class="goenex-attachment-image">..</span>` で囲むようにした。
+
 v0.3.5
 ======
 Jan 4, 2024
 
 - enexファイル名の末尾が `..enex` の時、`.` で終わるディレクトリ名を作成しようとするため、Windows ではパス名に不整合が発生する問題を修正。末尾の `.` は削除するようにした。
-
 
 v0.3.4
 ======
