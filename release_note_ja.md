@@ -1,5 +1,9 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+v0.3.6
+======
+Jan 5, 2024
+
 - 添付ファイルへリンクが独立した行になるように、タグ: `<a>..</a>` は `<div class="goenex-attachment-link">..</div>` で囲むようにした。
 - 添付画像のタグ: `<img>..</img>` は `<span class="goenex-attachment-image">..</span>` で囲むようにした。
 

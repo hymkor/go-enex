@@ -1,5 +1,9 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+v0.3.6
+======
+Jan 5, 2024
+
 - To ensure proper separation between adjacent links, the `<a>...</a>` tag for attached files is now wrapped in a `<div class="goenex-attachment-link">...</div>` element.
 - The `<img>` tag for attachment images is now wrapped in a `<span class="goenex-attachment-image">...</span>` element.
 
