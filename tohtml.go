@@ -184,14 +184,14 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 			if rsc, ok := exp.Hash[hash]; ok {
 				imgsrc1 := imgSrc.Make(rsc)
 				if strings.HasPrefix(strings.ToLower(rsc.Mime), "image") {
-					fmt.Fprintf(&buffer, `<a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
+					fmt.Fprintf(&buffer, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
 					if w := findWidth(attr); w != "" {
 						fmt.Fprintf(&buffer, ` width="%s"`, w)
 					}
 					if h := findHeight(attr); h != "" {
 						fmt.Fprintf(&buffer, ` height="%s"`, h)
 					}
-					fmt.Fprintf(&buffer, ` /></a>`)
+					fmt.Fprintf(&buffer, ` /></a></span>`)
 				} else {
 					fmt.Fprintf(&buffer, `<div class="goenex-attachment-link"><a href="%s">%s</a></div>`,
 						imgsrc1,
