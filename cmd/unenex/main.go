@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/hymkor/go-enex"
 )
 
 var (
@@ -61,11 +63,11 @@ func mains(args []string) error {
 			return err
 		}
 		if *optionMarkdown {
-			if err := enexToMarkdown(*optionRootDir, "", source, "", verbose); err != nil {
+			if err := enex.ToMarkdowns(*optionRootDir, "", source, "", verbose, os.Stderr); err != nil {
 				return err
 			}
 		} else {
-			if err := enexToHtml(*optionRootDir, "", source, "", verbose); err != nil {
+			if err := enex.ToHtmls(*optionRootDir, "", source, "", verbose, os.Stderr); err != nil {
 				return err
 			}
 		}
@@ -74,9 +76,9 @@ func mains(args []string) error {
 	_args := expandWildcard(args)
 
 	if *optionMarkdown {
-		return enexesToReadmeAndMarkdowns(*optionRootDir, verbose, _args)
+		return enex.FilesToMarkdowns(*optionRootDir, _args, verbose, os.Stderr)
 	}
-	return enexesToIndexAndHtmls(*optionRootDir, styleSheet, verbose, _args)
+	return enex.FilesToHtmls(*optionRootDir, styleSheet, _args, verbose, os.Stderr)
 }
 
 var version string
