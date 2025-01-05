@@ -193,7 +193,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 					}
 					fmt.Fprintf(&buffer, ` /></a>`)
 				} else {
-					fmt.Fprintf(&buffer, `<a href="%s">%s</a>`,
+					fmt.Fprintf(&buffer, `<div class="goenex-attachment-link"><a href="%s">%s</a></div>`,
 						imgsrc1,
 						rsc.NewFileName)
 				}
