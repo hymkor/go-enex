@@ -1,5 +1,41 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+## パッケージ修正
+
+### 以下の変数・関数を廃止した
+
+- `(*Resource) DataBeforeDecoded`
+- `Parse`
+- `ParseVerbose`
+- `(*Export) ExHeader`
+
+### 以下の変数・関数を非公開とした
+
+- `ToSafe` (`defaultSanitizer`)
+- `SerialNo` (`_SerialNo`)
+- `ShrinkMarkdown` (`shrinkMarkdown`)
+- `NewImgSrc` (`newAttachments`)
+
+### 以下の変数・関数の名前を変更した
+
+- 関数: `ParseMulti` → 新`Parse`
+- 型: `ImgSrc` → `Attachments`
+
+### 以下の関数を `unenex` から `go-enex` へ移動
+
+- `ToHtmls`
+- `FilesToHtmls`
+- `ToMarkdowns`
+- `FilesToMarkdowns`
+
+### その他
+
+- `unenex`側のHTML化関数、markdown化関数を go-enex 側へ移動
+- `(*Resource) Data` は戻り値でエラーも返すようにした
+- `(*Export) ToHtml` の第一引数を interface からコールバック関数へ変更
+- `Attachment.baseName` は BaseName として公開フィールドとした
+- メソッド: `(*Export) HtmlAndDir` を `Extract` へ改名し、引数の`Option`型で細かい指定を行えるようにした。
+
 v0.3.6
 ======
 Jan 5, 2024

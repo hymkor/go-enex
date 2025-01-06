@@ -1,5 +1,41 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+## Modified `go-enex` package
+
+### Removed the following variables and functions:
+
+- `(*Resource) DataBeforeDecoded`
+- `Parse`
+- `ParseVerbose`
+- `(*Export) ExHeader`
+
+### Unexported the following variables and functions:
+
+- `ToSafe` as `defaultSanitizer`
+- `SerialNo` as `_SerialNo`
+- `ShrinkMarkdown` as `shrinkMarkdown`
+- `NewImgSrc` as `newAttachments`
+
+### Renamed the following methods and types:
+
+- `ParseMulti` to `Parse`
+- `ImgSrc` to `Attachments`
+
+### Moved the following methods from `unenex` to `go-enex`:
+
+- `ToHtmls`
+- `FilesToHtmls`
+- `ToMarkdowns`
+- `FilesToMarkdowns`
+
+### Other updates:
+
+- Updated `(*Resource) Data` to return an error.
+- Changed the first parameter of `(*Export) ToHtml` from an interface to a function.
+- Added a new method, `(*Export) SanitizedExtract`, which is a version of `(*Export) Extract` with customizable sanitization options.
+- Made `Attachment.baseName` a public field as `BaseName`.
+- The method `(*Export) HtmlAndDir` has been renamed to `Extract`, allowing detailed specifications through the `Option` type in its arguments.
+
 v0.3.6
 ======
 Jan 5, 2024
