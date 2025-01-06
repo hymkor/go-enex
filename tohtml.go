@@ -65,18 +65,6 @@ func parseEnMediaAttr(s string) map[string]string {
 	return result
 }
 
-var ToSafe = strings.NewReplacer(
-	`<`, `＜`,
-	`>`, `＞`,
-	`"`, `”`,
-	`/`, `／`,
-	`\`, `＼`,
-	`|`, `｜`,
-	`?`, `？`,
-	`*`, `＊`,
-	`:`, `：`,
-)
-
 type _SerialNo map[string]map[string]int
 
 func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
@@ -119,10 +107,11 @@ type Attachments struct {
 	Dir       string
 	dirEscape string
 	serialNo  _SerialNo
+	sanitizer func(string) string
 }
 
-func newAttachments(note *Export) *Attachments {
-	baseName := ToSafe.Replace(note.Title)
+func newAttachments(note *Export, sanitizer func(string) string) *Attachments {
+	baseName := sanitizer(note.Title)
 	dir := baseName + ".files"
 	dirEscape := url.PathEscape(dir)
 	return &Attachments{
@@ -131,11 +120,12 @@ func newAttachments(note *Export) *Attachments {
 		Dir:       dir,
 		dirEscape: dirEscape,
 		serialNo:  make(_SerialNo),
+		sanitizer: sanitizer,
 	}
 }
 
 func (attach *Attachments) Make(rsc *Resource) string {
-	name := ToSafe.Replace(attach.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
+	name := attach.sanitizer(attach.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
 	rsc.NewFileName = name
 	attach.Images[filepath.Join(attach.Dir, name)] = rsc
 	return path.Join(attach.dirEscape, url.PathEscape(name))
@@ -192,8 +182,24 @@ func (exp *Export) ToHtml(makeRscUrl func(*Resource) string) string {
 	return buffer.String()
 }
 
-func (exp *Export) HtmlAndDir() (string, *Attachments) {
-	attach := newAttachments(exp)
+func (exp *Export) SanitizedExtract(sanitizer func(string) string) (string, *Attachments) {
+	attach := newAttachments(exp, sanitizer)
 	content := exp.ToHtml(attach.Make)
 	return content, attach
+}
+
+var ToSafe = strings.NewReplacer(
+	`<`, `＜`,
+	`>`, `＞`,
+	`"`, `”`,
+	`/`, `／`,
+	`\`, `＼`,
+	`|`, `｜`,
+	`?`, `？`,
+	`*`, `＊`,
+	`:`, `：`,
+)
+
+func (exp *Export) HtmlAndDir() (string, *Attachments) {
+	return exp.SanitizedExtract(ToSafe.Replace)
 }
