@@ -141,7 +141,7 @@ func (attach *Attachments) Make(rsc *Resource) string {
 	return path.Join(attach.dirEscape, url.PathEscape(name))
 }
 
-func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
+func (exp *Export) ToHtml(makeRscUrl func(*Resource) string) string {
 	content := exp.Content
 	content = rxXml.ReplaceAllString(content, "")
 	content = rxDocType.ReplaceAllString(content, "<!DOCTYPE html>")
@@ -166,9 +166,9 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 		attr := parseEnMediaAttr(content[m[2]:m[3]])
 		if hash, ok := attr["hash"]; ok {
 			if rsc, ok := exp.Hash[hash]; ok {
-				imgsrc1 := imgSrc.Make(rsc)
+				rscUrl := makeRscUrl(rsc)
 				if strings.HasPrefix(strings.ToLower(rsc.Mime), "image") {
-					fmt.Fprintf(&buffer, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
+					fmt.Fprintf(&buffer, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, rscUrl)
 					if w, ok := attr["width"]; ok {
 						fmt.Fprintf(&buffer, ` width="%s"`, w)
 					}
@@ -178,7 +178,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 					fmt.Fprintf(&buffer, ` /></a></span>`)
 				} else {
 					fmt.Fprintf(&buffer, `<div class="goenex-attachment-link"><a href="%s">%s</a></div>`,
-						imgsrc1,
+						rscUrl,
 						rsc.NewFileName)
 				}
 			} else {
@@ -193,7 +193,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 }
 
 func (exp *Export) HtmlAndDir() (string, *Attachments) {
-	imgSrc := newAttachments(exp)
-	content := exp.ToHtml(imgSrc)
-	return content, imgSrc
+	attach := newAttachments(exp)
+	content := exp.ToHtml(attach.Make)
+	return content, attach
 }
