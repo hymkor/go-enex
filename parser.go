@@ -45,7 +45,6 @@ type Resource struct {
 	Mime        string
 	SourceUrl   string
 	Hash        string
-	Index       int
 	FileName    string
 	Width       int
 	Height      int
@@ -104,11 +103,10 @@ func ParseMulti(data []byte, warn io.Writer) ([]*Export, error) {
 	for _, note := range theXml.Note {
 		resource := make(map[string][]*Resource)
 		hash := make(map[string]*Resource)
-		for i, rsc := range note.Resource {
+		for _, rsc := range note.Resource {
 			r := &Resource{
 				data:     rsc.Data,
 				Mime:     strings.TrimSpace(rsc.Mime),
-				Index:    i,
 				FileName: rsc.FileName,
 				Width:    rsc.Width,
 				Height:   rsc.Height,

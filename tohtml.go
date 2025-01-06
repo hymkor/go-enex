@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
-	"slices"
 	"strings"
 	"unicode/utf8"
 )
@@ -78,9 +77,9 @@ var ToSafe = strings.NewReplacer(
 	`:`, `：`,
 )
 
-type SerialNo map[string][]int
+type _SerialNo map[string]map[string]int
 
-func (s SerialNo) ToUniqName(mime, name string, index int) string {
+func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
 	if name == "" {
 		mainType, subType, _ := strings.Cut(mime, "/")
 		if strings.EqualFold(mainType, "image") {
@@ -95,20 +94,19 @@ func (s SerialNo) ToUniqName(mime, name string, index int) string {
 	}
 	uname := strings.ToUpper(name)
 	indexList, ok := s[uname]
-	if !ok {
+	if !ok || len(indexList) <= 0 {
 		// New table and no need to rename
-		s[uname] = []int{index}
+		s[uname] = map[string]int{hash: 0}
 		return name
 	}
-	serial := slices.Index(indexList, index)
-	if serial == 0 {
-		// Modifying and count-up are not needed
-		return name
-	}
-	if serial < 0 {
+	serial, ok := indexList[hash]
+	if !ok {
 		// Count-up and update table is required
 		serial = len(indexList)
-		s[uname] = append(indexList, index)
+		s[uname][hash] = serial
+	}
+	if serial == 0 {
+		return name
 	}
 	ext := path.Ext(name)
 	base := name[:len(name)-len(ext)]
@@ -120,7 +118,7 @@ type ImgSrc struct {
 	baseName  string
 	Dir       string
 	dirEscape string
-	serialNo  SerialNo
+	serialNo  _SerialNo
 }
 
 func NewImgSrc(note *Export) *ImgSrc {
@@ -132,12 +130,12 @@ func NewImgSrc(note *Export) *ImgSrc {
 		baseName:  baseName,
 		Dir:       dir,
 		dirEscape: dirEscape,
-		serialNo:  make(SerialNo),
+		serialNo:  make(_SerialNo),
 	}
 }
 
 func (imgSrc *ImgSrc) Make(rsc *Resource) string {
-	name := ToSafe.Replace(imgSrc.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Index))
+	name := ToSafe.Replace(imgSrc.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
 	rsc.NewFileName = name
 	imgSrc.Images[filepath.Join(imgSrc.Dir, name)] = rsc
 	return path.Join(imgSrc.dirEscape, url.PathEscape(name))

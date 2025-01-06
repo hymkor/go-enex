@@ -5,15 +5,15 @@ import (
 )
 
 func TestSerialNoToUniqName(t *testing.T) {
-	S := SerialNo{}
+	S := _SerialNo{}
 
 	source := []struct {
-		name  string
-		index int
+		name string
+		hash string
 	}{
-		{"hogehoge.txt", 0},
-		{"uhauha.txt", 1},
-		{"hogehoge.txt", 2},
+		{"hogehoge.txt", "0"},
+		{"uhauha.txt", "1"},
+		{"hogehoge.txt", "2"},
 	}
 
 	expect := []string{
@@ -23,10 +23,10 @@ func TestSerialNoToUniqName(t *testing.T) {
 	}
 
 	for i, src := range source {
-		result := S.ToUniqName("text/plain", src.name, src.index)
+		result := S.ToUniqName("text/plain", src.name, src.hash)
 		if expect[i] != result {
-			t.Fatalf(`(%d) expect "%s" for "%s" #%d, but "%s"`,
-				i, expect[i], src.name, src.index, result)
+			t.Fatalf(`(%d) expect "%s" for "%s" (%s), but "%s"`,
+				i, expect[i], src.name, src.hash, result)
 		}
 	}
 }
