@@ -49,7 +49,7 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 			url.PathEscape(safeName+".html"),
 			note.Title,
 		)
-		html, imgSrc := note.HtmlAndDir()
+		html, imgSrc := note.Extract()
 		fname := filepath.Join(rootDir, safeName+".html")
 		fd, err := os.Create(fname)
 		if err != nil {

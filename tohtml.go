@@ -200,6 +200,6 @@ var ToSafe = strings.NewReplacer(
 	`:`, `：`,
 )
 
-func (exp *Export) HtmlAndDir() (string, *Attachments) {
+func (exp *Export) Extract() (string, *Attachments) {
 	return exp.SanitizedExtract(ToSafe.Replace)
 }

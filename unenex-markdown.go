@@ -38,7 +38,7 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 			url.PathEscape(safeName+".md"),
 		)
 
-		html, imgSrc := note.HtmlAndDir()
+		html, imgSrc := note.Extract()
 
 		var markdown strings.Builder
 		htmlToMarkdown(&markdown, strings.NewReader(html))
