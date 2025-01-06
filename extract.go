@@ -131,6 +131,16 @@ type Option struct {
 	Sanitizer func(string) string
 }
 
+const (
+	_BALLOT_BOX            = " \u2610 "
+	_BALLOT_BOX_WITH_CHECK = " \u2611 "
+)
+
+var enTagReplacer = strings.NewReplacer(
+	`<en-todo checked="false" />`, _BALLOT_BOX,
+	`<en-todo checked="true" />`, _BALLOT_BOX_WITH_CHECK,
+)
+
 func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string {
 	var buffer strings.Builder
 
@@ -144,7 +154,8 @@ func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string
 	buffer.WriteString(exp.Title)
 	buffer.WriteString("</b></h1>\n")
 
-	buffer.WriteString(rxMedia.ReplaceAllStringFunc(exp.Content, func(tag string) string {
+	content := enTagReplacer.Replace(exp.Content)
+	buffer.WriteString(rxMedia.ReplaceAllStringFunc(content, func(tag string) string {
 		attr := parseEnMediaAttr(tag)
 		hash, ok := attr["hash"]
 		if !ok {
