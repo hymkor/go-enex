@@ -51,10 +51,6 @@ type Resource struct {
 	NewFileName string
 }
 
-func (rsc *Resource) DataBeforeDecoded() string {
-	return rsc.data
-}
-
 func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
 	strReader := strings.NewReader(strings.TrimSpace(rsc.data))
 	binReader := base64.NewDecoder(base64.StdEncoding, strReader)
