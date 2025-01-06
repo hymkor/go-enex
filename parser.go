@@ -34,8 +34,13 @@ type xmlEnExport struct {
 type xmlNote struct {
 	XMLName  xml.Name       `xml:"note"`
 	Title    string         `xml:"title"`
-	Content  string         `xml:"content"`
+	Content  []byte         `xml:"content"`
 	Resource []*xmlResource `xml:"resource"`
+}
+
+type xmlEnNote struct {
+	XMLName xml.Name `xml:"en-note"`
+	Text    string   `xml:",innerxml"`
 }
 
 type Resource struct {
@@ -112,9 +117,13 @@ func Parse(data []byte, warn io.Writer) ([]*Export, error) {
 			}
 			resource[rsc.FileName] = append(resource[rsc.FileName], r)
 		}
+		var enNote xmlEnNote
+		if err := xml.Unmarshal(note.Content, &enNote); err != nil {
+			return nil, err
+		}
 		exports = append(exports, &Export{
 			Title:    note.Title,
-			Content:  strings.TrimSpace(note.Content),
+			Content:  enNote.Text,
 			Resource: resource,
 			Hash:     hash,
 		})

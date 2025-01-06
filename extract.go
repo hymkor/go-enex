@@ -11,11 +11,7 @@ import (
 	"unicode/utf8"
 )
 
-var (
-	rxXml     = regexp.MustCompile(`\s*<\?xml[^>]*>\s*`)
-	rxDocType = regexp.MustCompile(`(?s)\s*<!DOCTYPE[^>]*>\s*`)
-	rxMedia   = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
-)
+var rxMedia = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
 
 func parseEnMediaAttr(s string) map[string]string {
 	result := map[string]string{}
@@ -141,18 +137,15 @@ func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string
 	if opt != nil {
 		exHeader = opt.ExHeader
 	}
-	content := exp.Content
-	content = rxXml.ReplaceAllString(content, "")
-	content = rxDocType.ReplaceAllString(content, "<!DOCTYPE html>")
-	content = strings.ReplaceAll(content, "<en-note>",
-		"<html><head><meta charset=\"utf-8\">"+
-			exHeader+
-			"</head><body>"+
-			"<en-note class=\"peso\" style=\"white-space: inherit;\">\n"+
-			`<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`+
-			html.EscapeString(exp.Title)+
-			"</b></h1>\n")
-	content = strings.ReplaceAll(content, "</en-note>", "</en-note></body></html>\n")
+	content := "<html><head><meta charset=\"utf-8\">" +
+		exHeader +
+		"</head><body>" +
+		"<en-note class=\"peso\" style=\"white-space: inherit;\">\n" +
+		`<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>` +
+		html.EscapeString(exp.Title) +
+		"</b></h1>\n" +
+		exp.Content +
+		"</en-note></body></html>\n"
 
 	var buffer strings.Builder
 	for {
