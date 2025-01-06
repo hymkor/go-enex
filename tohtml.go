@@ -66,20 +66,6 @@ func parseEnMediaAttr(s string) map[string]string {
 	return result
 }
 
-func findWidth(attr map[string]string) string {
-	if value, ok := attr["width"]; ok {
-		return value
-	}
-	return ""
-}
-
-func findHeight(attr map[string]string) string {
-	if value, ok := attr["height"]; ok {
-		return value
-	}
-	return ""
-}
-
 var ToSafe = strings.NewReplacer(
 	`<`, `＜`,
 	`>`, `＞`,
@@ -185,10 +171,10 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 				imgsrc1 := imgSrc.Make(rsc)
 				if strings.HasPrefix(strings.ToLower(rsc.Mime), "image") {
 					fmt.Fprintf(&buffer, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, imgsrc1)
-					if w := findWidth(attr); w != "" {
+					if w, ok := attr["width"]; ok {
 						fmt.Fprintf(&buffer, ` width="%s"`, w)
 					}
-					if h := findHeight(attr); h != "" {
+					if h, ok := attr["height"]; ok {
 						fmt.Fprintf(&buffer, ` height="%s"`, h)
 					}
 					fmt.Fprintf(&buffer, ` /></a></span>`)

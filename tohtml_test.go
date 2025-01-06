@@ -46,12 +46,12 @@ func TestFindWidth(t *testing.T) {
 
 	for _, c := range test {
 		a := parseEnMediaAttr(c.source)
-		width := findWidth(a)
+		width := a["width"]
 		if width != c.width {
 			t.Fatalf(`expect "%s" as width for "%s", but "%s"`,
 				c.width, c.source, width)
 		}
-		height := findHeight(a)
+		height := a["height"]
 		if height != c.height {
 			t.Fatalf(`expect "%s" as width for "%s", but "%s"`,
 				c.height, c.source, height)
