@@ -19,11 +19,11 @@ func TestSerialNoToUniqName(t *testing.T) {
 	expect := []string{
 		"hogehoge.txt",
 		"uhauha.txt",
-		"hogehoge (2).txt",
+		"hogehoge (1).txt",
 	}
 
 	for i, src := range source {
-		result := S.ToUniqName(src.name, src.index)
+		result := S.ToUniqName("text/plain", src.name, src.index)
 		if expect[i] != result {
 			t.Fatalf(`(%d) expect "%s" for "%s" #%d, but "%s"`,
 				i, expect[i], src.name, src.index, result)
@@ -38,12 +38,7 @@ func TestFindWidth(t *testing.T) {
 		height string
 	}{
 		{
-			source: ` style="--en-naturalWidth:796; --en-naturalHeight:559;" hash="f3a35235096d45a300979dfee31ecda3" type="image/png" /`,
-			width:  "796",
-			height: "559",
-		},
-		{
-			source: ` style="--en-naturalWidth:1920; --en-naturalHeight:1280;" height="384px" width="576px" hash="15426904081f2cfc80894e46d4e84723" type="image/jpeg" /`,
+			source: ` height="384px" width="576px" hash="15426904081f2cfc80894e46d4e84723" type="image/jpeg" /`,
 			width:  "576px",
 			height: "384px",
 		},
@@ -51,13 +46,12 @@ func TestFindWidth(t *testing.T) {
 
 	for _, c := range test {
 		a := parseEnMediaAttr(c.source)
-		s := parseEnMediaStyle(a["style"])
-		width := findWidth(a, s)
+		width := findWidth(a)
 		if width != c.width {
 			t.Fatalf(`expect "%s" as width for "%s", but "%s"`,
 				c.width, c.source, width)
 		}
-		height := findHeight(a, s)
+		height := findHeight(a)
 		if height != c.height {
 			t.Fatalf(`expect "%s" as width for "%s", but "%s"`,
 				c.height, c.source, height)
