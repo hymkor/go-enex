@@ -40,10 +40,10 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 		index.Close()
 	}()
 
-	for _, note := range exports {
-		note.ExHeader = styleSheet
+	opt := &Option{ExHeader: styleSheet}
 
-		html, imgSrc := note.Extract()
+	for _, note := range exports {
+		html, imgSrc := note.Extract(opt)
 		safeName := imgSrc.BaseName
 
 		fmt.Fprintf(index, "<li><a href=\"%s\">%s</a></li>\n",

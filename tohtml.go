@@ -131,13 +131,22 @@ func (attach *Attachments) Make(rsc *Resource) string {
 	return path.Join(attach.dirEscape, url.PathEscape(name))
 }
 
-func (exp *Export) ToHtml(makeRscUrl func(*Resource) string) string {
+type Option struct {
+	ExHeader  string
+	Sanitizer func(string) string
+}
+
+func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string {
+	exHeader := ""
+	if opt != nil {
+		exHeader = opt.ExHeader
+	}
 	content := exp.Content
 	content = rxXml.ReplaceAllString(content, "")
 	content = rxDocType.ReplaceAllString(content, "<!DOCTYPE html>")
 	content = strings.ReplaceAll(content, "<en-note>",
 		"<html><head><meta charset=\"utf-8\">"+
-			exp.ExHeader+
+			exHeader+
 			"</head><body>"+
 			"<en-note class=\"peso\" style=\"white-space: inherit;\">\n"+
 			`<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`+
@@ -182,12 +191,6 @@ func (exp *Export) ToHtml(makeRscUrl func(*Resource) string) string {
 	return buffer.String()
 }
 
-func (exp *Export) SanitizedExtract(sanitizer func(string) string) (string, *Attachments) {
-	attach := newAttachments(exp, sanitizer)
-	content := exp.ToHtml(attach.Make)
-	return content, attach
-}
-
 var defaultSanitizer = strings.NewReplacer(
 	`<`, `＜`,
 	`>`, `＞`,
@@ -200,6 +203,12 @@ var defaultSanitizer = strings.NewReplacer(
 	`:`, `：`,
 )
 
-func (exp *Export) Extract() (string, *Attachments) {
-	return exp.SanitizedExtract(defaultSanitizer.Replace)
+func (exp *Export) Extract(opt *Option) (string, *Attachments) {
+	sanitizer := defaultSanitizer.Replace
+	if opt != nil && opt.Sanitizer != nil {
+		sanitizer = opt.Sanitizer
+	}
+	attach := newAttachments(exp, sanitizer)
+	content := exp.ToHtml(attach.Make, opt)
+	return content, attach
 }

@@ -20,7 +20,7 @@ func mains() error {
 		return err
 	}
 	for _, note := range notes {
-		html, imgSrc := note.Extract()
+		html, imgSrc := note.Extract(nil)
 		baseName := imgSrc.BaseName
 		err := os.WriteFile(baseName+".html", []byte(html), 0644)
 		if err != nil {
