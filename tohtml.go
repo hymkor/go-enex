@@ -188,7 +188,7 @@ func (exp *Export) SanitizedExtract(sanitizer func(string) string) (string, *Att
 	return content, attach
 }
 
-var ToSafe = strings.NewReplacer(
+var defaultSanitizer = strings.NewReplacer(
 	`<`, `＜`,
 	`>`, `＞`,
 	`"`, `”`,
@@ -201,5 +201,5 @@ var ToSafe = strings.NewReplacer(
 )
 
 func (exp *Export) Extract() (string, *Attachments) {
-	return exp.SanitizedExtract(ToSafe.Replace)
+	return exp.SanitizedExtract(defaultSanitizer.Replace)
 }
