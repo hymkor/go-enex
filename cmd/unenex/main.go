@@ -9,6 +9,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/mattn/godown"
+
 	"github.com/hymkor/go-enex"
 )
 
@@ -30,6 +32,10 @@ func expandWildcard(args []string) []string {
 		}
 	}
 	return _args
+}
+
+func goDown(w io.Writer, r io.Reader) error {
+	return godown.Convert(w, r, nil)
 }
 
 func mains(args []string) error {
@@ -63,7 +69,7 @@ func mains(args []string) error {
 			return err
 		}
 		if *optionMarkdown {
-			if err := enex.ToMarkdowns(*optionRootDir, "", source, "", verbose, os.Stderr); err != nil {
+			if err := enex.ToMarkdowns(*optionRootDir, "", source, goDown, verbose, os.Stderr); err != nil {
 				return err
 			}
 		} else {
@@ -76,7 +82,7 @@ func mains(args []string) error {
 	_args := expandWildcard(args)
 
 	if *optionMarkdown {
-		return enex.FilesToMarkdowns(*optionRootDir, _args, verbose, os.Stderr)
+		return enex.FilesToMarkdowns(*optionRootDir, goDown, _args, verbose, os.Stderr)
 	}
 	return enex.FilesToHtmls(*optionRootDir, styleSheet, _args, verbose, os.Stderr)
 }

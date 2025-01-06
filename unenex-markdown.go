@@ -7,11 +7,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/mattn/godown"
 )
 
-func ToMarkdowns(rootDir, enexName string, source []byte, styleSheet string, wDebug, wLog io.Writer) error {
+func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io.Writer, io.Reader) error, wDebug, wLog io.Writer) error {
 	exports, err := ParseMulti(source, wDebug)
 	if err != nil {
 		return err
@@ -43,7 +41,7 @@ func ToMarkdowns(rootDir, enexName string, source []byte, styleSheet string, wDe
 		html, imgSrc := note.HtmlAndDir()
 
 		var markdown strings.Builder
-		godown.Convert(&markdown, strings.NewReader(html), nil)
+		htmlToMarkdown(&markdown, strings.NewReader(html))
 		fname := filepath.Join(rootDir, safeName+".md")
 		fd, err := os.Create(fname)
 		if err != nil {
@@ -60,7 +58,7 @@ func ToMarkdowns(rootDir, enexName string, source []byte, styleSheet string, wDe
 	return nil
 }
 
-func FilesToMarkdowns(rootDir string, enexFiles []string, wDebug, wLog io.Writer) error {
+func FilesToMarkdowns(rootDir string, htmlToMarkdown func(io.Writer, io.Reader) error, enexFiles []string, wDebug, wLog io.Writer) error {
 	wReadme, err := os.Create(filepath.Join(rootDir, "README.md"))
 	if err != nil {
 		return err
@@ -73,7 +71,7 @@ func FilesToMarkdowns(rootDir string, enexFiles []string, wDebug, wLog io.Writer
 			return err
 		}
 		enexName := getEnexBaseName(enexFileName)
-		if err := ToMarkdowns(rootDir, enexName, data, "", wDebug, wLog); err != nil {
+		if err := ToMarkdowns(rootDir, enexName, data, htmlToMarkdown, wDebug, wLog); err != nil {
 			return err
 		}
 		fmt.Fprintf(wReadme, "- [%s](%s/README.md)\n",
