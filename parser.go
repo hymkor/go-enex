@@ -64,20 +64,20 @@ func (rsc *Resource) Data() ([]byte, error) {
 	return base64.StdEncoding.DecodeString(rsc.data)
 }
 
-type Export struct {
+type Note struct {
 	Title    string
 	Content  string
 	Resource map[string][]*Resource // filename to the multi resources
 	Hash     map[string]*Resource   // hash to the one resource
 }
 
-func Parse(data []byte, warn io.Writer) ([]*Export, error) {
+func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
 		return nil, err
 	}
-	exports := make([]*Export, 0, len(theXml.Note))
+	notes := make([]*Note, 0, len(theXml.Note))
 	for _, note := range theXml.Note {
 		resource := make(map[string][]*Resource)
 		hash := make(map[string]*Resource)
@@ -121,12 +121,12 @@ func Parse(data []byte, warn io.Writer) ([]*Export, error) {
 		if err := xml.Unmarshal(note.Content, &enNote); err != nil {
 			return nil, err
 		}
-		exports = append(exports, &Export{
+		notes = append(notes, &Note{
 			Title:    note.Title,
 			Content:  enNote.Text,
 			Resource: resource,
 			Hash:     hash,
 		})
 	}
-	return exports, nil
+	return notes, nil
 }

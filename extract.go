@@ -105,7 +105,7 @@ type Attachments struct {
 	sanitizer func(string) string
 }
 
-func newAttachments(note *Export, sanitizer func(string) string) *Attachments {
+func newAttachments(note *Note, sanitizer func(string) string) *Attachments {
 	baseName := sanitizer(note.Title)
 	dir := baseName + ".files"
 	dirEscape := url.PathEscape(dir)
@@ -141,7 +141,7 @@ var enTagReplacer = strings.NewReplacer(
 	`<en-todo checked="true" />`, _BALLOT_BOX_WITH_CHECK,
 )
 
-func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string {
+func (note *Note) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string {
 	var buffer strings.Builder
 
 	buffer.WriteString("<!DOCTYPE html><html><head><meta charset=\"utf-8\">")
@@ -151,17 +151,17 @@ func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string
 	buffer.WriteString(`</head><body>
 <en-note class="peso" style="white-space: inherit;">
 <h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`)
-	buffer.WriteString(exp.Title)
+	buffer.WriteString(note.Title)
 	buffer.WriteString("</b></h1>\n")
 
-	content := enTagReplacer.Replace(exp.Content)
+	content := enTagReplacer.Replace(note.Content)
 	buffer.WriteString(rxMedia.ReplaceAllStringFunc(content, func(tag string) string {
 		attr := parseEnMediaAttr(tag)
 		hash, ok := attr["hash"]
 		if !ok {
 			return `<!-- Error: hash not found -->`
 		}
-		rsc, ok := exp.Hash[hash]
+		rsc, ok := note.Hash[hash]
 		if !ok {
 			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
 		}
@@ -202,12 +202,12 @@ var defaultSanitizer = strings.NewReplacer(
 	`:`, `：`,
 )
 
-func (exp *Export) Extract(opt *Option) (string, *Attachments) {
+func (note *Note) Extract(opt *Option) (string, *Attachments) {
 	sanitizer := defaultSanitizer.Replace
 	if opt != nil && opt.Sanitizer != nil {
 		sanitizer = opt.Sanitizer
 	}
-	attach := newAttachments(exp, sanitizer)
-	content := exp.ToHtml(attach.Make, opt)
+	attach := newAttachments(note, sanitizer)
+	content := note.ToHtml(attach.Make, opt)
 	return content, attach
 }
