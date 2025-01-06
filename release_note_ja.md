@@ -1,6 +1,11 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
-## パッケージ修正
+## unenex 修正
+
+- `<en-todo>` タグを BALLOT BOX へ置換するようにした (U+2610 or U+2611)
+- HTML の先頭に `<!DOCTYPE html>` を挿入するようにした。
+
+## go-enex パッケージ修正
 
 ### 以下の変数・関数を廃止した
 
@@ -16,10 +21,11 @@
 - `ShrinkMarkdown` (`shrinkMarkdown`)
 - `NewImgSrc` (`newAttachments`)
 
-### 以下の変数・関数の名前を変更した
+### 以下の関数・型の名前を変更した
 
 - 関数: `ParseMulti` → 新`Parse`
 - 型: `ImgSrc` → `Attachments`
+- 型: `Export` → `Note`
 
 ### 以下の関数を `unenex` から `go-enex` へ移動
 
@@ -34,7 +40,7 @@
 - `(*Resource) Data` は戻り値でエラーも返すようにした
 - `(*Export) ToHtml` の第一引数を interface からコールバック関数へ変更
 - `Attachment.baseName` は BaseName として公開フィールドとした
-- メソッド: `(*Export) HtmlAndDir` を `Extract` へ改名し、引数の`Option`型で細かい指定を行えるようにした。
+- メソッド: `(*Export) HtmlAndDir` を `(*Note) Extract` へ改名し、引数の`Option`型で細かい指定を行えるようにした。
 
 v0.3.6
 ======

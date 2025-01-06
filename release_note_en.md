@@ -1,5 +1,10 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+## Modified `unenex`
+
+- Replace `<en-todo>` to the unicode of BALLOT BOX (U+2610 or U+2611)
+- Insert `<!DOCTYPE html>` at the top of HTML
+
 ## Modified `go-enex` package
 
 ### Removed the following variables and functions:
@@ -20,6 +25,7 @@
 
 - `ParseMulti` to `Parse`
 - `ImgSrc` to `Attachments`
+- `Export` to `Note`
 
 ### Moved the following methods from `unenex` to `go-enex`:
 
@@ -33,7 +39,7 @@
 - Updated `(*Resource) Data` to return an error.
 - Changed the first parameter of `(*Export) ToHtml` from an interface to a function.
 - Made `Attachment.baseName` a public field as `BaseName`.
-- The method `(*Export) HtmlAndDir` has been renamed to `Extract`, allowing detailed specifications through the `Option` type in its arguments.
+- The method `(*Export) HtmlAndDir` has been renamed to `(*Note) Extract`, allowing detailed specifications through the `Option` type in its arguments.
 
 v0.3.6
 ======
