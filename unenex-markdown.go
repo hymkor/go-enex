@@ -31,14 +31,13 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 	}
 
 	for _, note := range exports {
-		safeName := ToSafe.Replace(note.Title)
+		html, imgSrc := note.Extract()
+		safeName := imgSrc.BaseName
 
 		fmt.Fprintf(index, "* [%s](%s)\n",
 			note.Title,
 			url.PathEscape(safeName+".md"),
 		)
-
-		html, imgSrc := note.Extract()
 
 		var markdown strings.Builder
 		htmlToMarkdown(&markdown, strings.NewReader(html))

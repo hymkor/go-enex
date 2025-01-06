@@ -21,7 +21,7 @@ func mains() error {
 	}
 	for _, note := range notes {
 		html, imgSrc := note.Extract()
-		baseName := enex.ToSafe.Replace(note.Title)
+		baseName := imgSrc.BaseName
 		err := os.WriteFile(baseName+".html", []byte(html), 0644)
 		if err != nil {
 			return err

@@ -43,13 +43,13 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 	for _, note := range exports {
 		note.ExHeader = styleSheet
 
-		safeName := ToSafe.Replace(note.Title)
+		html, imgSrc := note.Extract()
+		safeName := imgSrc.BaseName
 
 		fmt.Fprintf(index, "<li><a href=\"%s\">%s</a></li>\n",
 			url.PathEscape(safeName+".html"),
 			note.Title,
 		)
-		html, imgSrc := note.Extract()
 		fname := filepath.Join(rootDir, safeName+".html")
 		fd, err := os.Create(fname)
 		if err != nil {

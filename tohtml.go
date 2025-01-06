@@ -103,7 +103,7 @@ func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
 
 type Attachments struct {
 	Images    map[string]*Resource
-	baseName  string
+	BaseName  string
 	Dir       string
 	dirEscape string
 	serialNo  _SerialNo
@@ -116,7 +116,7 @@ func newAttachments(note *Export, sanitizer func(string) string) *Attachments {
 	dirEscape := url.PathEscape(dir)
 	return &Attachments{
 		Images:    make(map[string]*Resource),
-		baseName:  baseName,
+		BaseName:  baseName,
 		Dir:       dir,
 		dirEscape: dirEscape,
 		serialNo:  make(_SerialNo),
