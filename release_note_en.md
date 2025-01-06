@@ -32,7 +32,6 @@
 
 - Updated `(*Resource) Data` to return an error.
 - Changed the first parameter of `(*Export) ToHtml` from an interface to a function.
-- Added a new method, `(*Export) SanitizedExtract`, which is a version of `(*Export) Extract` with customizable sanitization options.
 - Made `Attachment.baseName` a public field as `BaseName`.
 - The method `(*Export) HtmlAndDir` has been renamed to `Extract`, allowing detailed specifications through the `Option` type in its arguments.
 
