@@ -52,7 +52,7 @@ type Resource struct {
 }
 
 func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
-	strReader := strings.NewReader(strings.TrimSpace(rsc.data))
+	strReader := strings.NewReader(rsc.data)
 	binReader := base64.NewDecoder(base64.StdEncoding, strReader)
 	return io.Copy(w, binReader)
 }
@@ -101,7 +101,7 @@ func ParseMulti(data []byte, warn io.Writer) ([]*Export, error) {
 		hash := make(map[string]*Resource)
 		for _, rsc := range note.Resource {
 			r := &Resource{
-				data:     rsc.Data,
+				data:     strings.TrimSpace(rsc.Data),
 				Mime:     strings.TrimSpace(rsc.Mime),
 				FileName: rsc.FileName,
 				Width:    rsc.Width,
