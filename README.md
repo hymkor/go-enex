@@ -61,13 +61,13 @@ func mains() error {
     if err != nil {
         return err
     }
-    notes, err := enex.ParseMulti(data, os.Stderr)
+    notes, err := enex.Parse(data, os.Stderr)
     if err != nil {
         return err
     }
     for _, note := range notes {
-        html, imgSrc := note.HtmlAndDir()
-        baseName := enex.ToSafe.Replace(note.Title)
+        html, imgSrc := note.Extract(nil)
+        baseName := imgSrc.BaseName
         err := os.WriteFile(baseName+".html", []byte(html), 0644)
         if err != nil {
             return err
@@ -78,7 +78,10 @@ func mains() error {
             fmt.Fprintf(os.Stderr, "Create Dir: %s", imgSrc.Dir)
             os.Mkdir(imgSrc.Dir, 0755)
             for fname, rsc := range imgSrc.Images {
-                data := rsc.Data()
+                data, err := rsc.Data()
+                if err != nil {
+                    return err
+                }
                 fmt.Fprintf(os.Stderr, "Create File: %s (%d bytes)\n", fname, len(data))
                 os.WriteFile(fname, data, 0666)
             }
