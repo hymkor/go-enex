@@ -1,7 +1,6 @@
 package enex
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/xml"
 	"errors"
@@ -58,9 +57,8 @@ func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
 }
 
 func (rsc *Resource) Data() []byte {
-	var buffer bytes.Buffer
-	rsc.WriteTo(&buffer)
-	return buffer.Bytes()
+	data, _ := base64.StdEncoding.DecodeString(rsc.data)
+	return data
 }
 
 type Export struct {

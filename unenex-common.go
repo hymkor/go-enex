@@ -40,22 +40,11 @@ func extractAttachment(rootDir string, attachment map[string]*Resource, log io.W
 		} else if !stat.IsDir() {
 			return fmt.Errorf("Can not mkdir %s because the file same name already exists", dir)
 		}
-		fmt.Fprint(log, "Create File: ", fname)
-		fd, err := os.Create(fname)
-		if err != nil {
-			fmt.Fprintln(log)
-			return fmt.Errorf("os.Create: %w", err)
+		data := data.Data()
+		if err := os.WriteFile(fname, data, 0644); err != nil {
+			return err
 		}
-		n, err := data.WriteTo(fd)
-		if err != nil {
-			fmt.Fprintln(log)
-			return fmt.Errorf(".WriteTo: %w", err)
-		}
-		if err := fd.Close(); err != nil {
-			fmt.Fprintln(log)
-			return fmt.Errorf(".Close: %w", err)
-		}
-		fmt.Fprintf(log, " (%d bytes)\n", n)
+		fmt.Fprintf(log, "Create File: %s (%d bytes)\n", fname, len(data))
 	}
 	return nil
 }
