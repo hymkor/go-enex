@@ -15,7 +15,7 @@ func mains() error {
 	if err != nil {
 		return err
 	}
-	notes, err := enex.ParseMulti(data, os.Stderr)
+	notes, err := enex.Parse(data, os.Stderr)
 	if err != nil {
 		return err
 	}

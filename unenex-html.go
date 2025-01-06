@@ -15,7 +15,7 @@ const indexHtmlHeader = `<html><head>
 const indexHtmlFooter = "</body></html>"
 
 func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug, wLog io.Writer) error {
-	exports, err := ParseMulti(source, wDebug)
+	exports, err := Parse(source, wDebug)
 	if err != nil {
 		return err
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io.Writer, io.Reader) error, wDebug, wLog io.Writer) error {
-	exports, err := ParseMulti(source, wDebug)
+	exports, err := Parse(source, wDebug)
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,6 @@ package enex
 import (
 	"encoding/base64"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"io"
 	"net/url"
@@ -69,25 +68,7 @@ type Export struct {
 	ExHeader string
 }
 
-func Parse(data []byte) (*Export, error) {
-	return ParseVerbose(data, io.Discard)
-}
-
-func ParseVerbose(data []byte, warn io.Writer) (*Export, error) {
-	exports, err := ParseMulti(data, warn)
-	if err != nil {
-		return nil, err
-	}
-	if len(exports) >= 2 {
-		return nil, errors.New("ParseVerbose: not support multi notes")
-	}
-	if len(exports) <= 0 {
-		return nil, errors.New("ParseVerbose: zero notes")
-	}
-	return exports[0], nil
-}
-
-func ParseMulti(data []byte, warn io.Writer) ([]*Export, error) {
+func Parse(data []byte, warn io.Writer) ([]*Export, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
