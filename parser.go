@@ -55,9 +55,8 @@ func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
 	return io.Copy(w, binReader)
 }
 
-func (rsc *Resource) Data() []byte {
-	data, _ := base64.StdEncoding.DecodeString(rsc.data)
-	return data
+func (rsc *Resource) Data() ([]byte, error) {
+	return base64.StdEncoding.DecodeString(rsc.data)
 }
 
 type Export struct {
