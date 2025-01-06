@@ -113,7 +113,7 @@ func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
 	return fmt.Sprintf("%s (%d)%s", base, serial, ext)
 }
 
-type ImgSrc struct {
+type Attachments struct {
 	Images    map[string]*Resource
 	baseName  string
 	Dir       string
@@ -121,11 +121,11 @@ type ImgSrc struct {
 	serialNo  _SerialNo
 }
 
-func NewImgSrc(note *Export) *ImgSrc {
+func NewImgSrc(note *Export) *Attachments {
 	baseName := ToSafe.Replace(note.Title)
 	dir := baseName + ".files"
 	dirEscape := url.PathEscape(dir)
-	return &ImgSrc{
+	return &Attachments{
 		Images:    make(map[string]*Resource),
 		baseName:  baseName,
 		Dir:       dir,
@@ -134,7 +134,7 @@ func NewImgSrc(note *Export) *ImgSrc {
 	}
 }
 
-func (imgSrc *ImgSrc) Make(rsc *Resource) string {
+func (imgSrc *Attachments) Make(rsc *Resource) string {
 	name := ToSafe.Replace(imgSrc.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
 	rsc.NewFileName = name
 	imgSrc.Images[filepath.Join(imgSrc.Dir, name)] = rsc
@@ -192,7 +192,7 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 	return buffer.String()
 }
 
-func (exp *Export) HtmlAndDir() (string, *ImgSrc) {
+func (exp *Export) HtmlAndDir() (string, *Attachments) {
 	imgSrc := NewImgSrc(exp)
 	content := exp.ToHtml(imgSrc)
 	return content, imgSrc
