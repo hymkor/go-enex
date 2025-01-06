@@ -2,7 +2,7 @@ package enex
 
 import (
 	"fmt"
-	htmlPkg "html"
+	"html"
 	"net/url"
 	"path"
 	"path/filepath"
@@ -142,28 +142,28 @@ func (imgSrc *ImgSrc) Make(rsc *Resource) string {
 }
 
 func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
-	html := exp.Content
-	html = rxXml.ReplaceAllString(html, "")
-	html = rxDocType.ReplaceAllString(html, "<!DOCTYPE html>")
-	html = strings.ReplaceAll(html, "<en-note>",
+	content := exp.Content
+	content = rxXml.ReplaceAllString(content, "")
+	content = rxDocType.ReplaceAllString(content, "<!DOCTYPE html>")
+	content = strings.ReplaceAll(content, "<en-note>",
 		"<html><head><meta charset=\"utf-8\">"+
 			exp.ExHeader+
 			"</head><body>"+
 			"<en-note class=\"peso\" style=\"white-space: inherit;\">\n"+
 			`<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`+
-			htmlPkg.EscapeString(exp.Title)+
+			html.EscapeString(exp.Title)+
 			"</b></h1>\n")
-	html = strings.ReplaceAll(html, "</en-note>", "</en-note></body></html>\n")
+	content = strings.ReplaceAll(content, "</en-note>", "</en-note></body></html>\n")
 
 	var buffer strings.Builder
 	for {
-		m := rxMedia.FindStringSubmatchIndex(html)
+		m := rxMedia.FindStringSubmatchIndex(content)
 		if m == nil {
-			buffer.WriteString(html)
+			buffer.WriteString(content)
 			break
 		}
-		buffer.WriteString(html[:m[0]])
-		attr := parseEnMediaAttr(html[m[2]:m[3]])
+		buffer.WriteString(content[:m[0]])
+		attr := parseEnMediaAttr(content[m[2]:m[3]])
 		if hash, ok := attr["hash"]; ok {
 			if rsc, ok := exp.Hash[hash]; ok {
 				imgsrc1 := imgSrc.Make(rsc)
@@ -187,13 +187,13 @@ func (exp *Export) ToHtml(imgSrc interface{ Make(*Resource) string }) string {
 		} else {
 			fmt.Fprintf(&buffer, `<!-- Error: hash not found -->`)
 		}
-		html = html[m[1]:]
+		content = content[m[1]:]
 	}
 	return buffer.String()
 }
 
 func (exp *Export) HtmlAndDir() (string, *ImgSrc) {
 	imgSrc := NewImgSrc(exp)
-	html := exp.ToHtml(imgSrc)
-	return html, imgSrc
+	content := exp.ToHtml(imgSrc)
+	return content, imgSrc
 }
