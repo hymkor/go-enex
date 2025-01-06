@@ -20,7 +20,7 @@ var (
 	rxPre   = regexp.MustCompile("^```")
 )
 
-func ShrinkMarkdown(r io.Reader, w io.Writer) {
+func shrinkMarkdown(r io.Reader, w io.Writer) {
 	sc := bufio.NewScanner(r)
 	pre := false
 	lastLine := _asis

@@ -47,7 +47,7 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 		if err != nil {
 			return err
 		}
-		ShrinkMarkdown(strings.NewReader(markdown.String()), fd)
+		shrinkMarkdown(strings.NewReader(markdown.String()), fd)
 		fd.Close()
 		fmt.Fprintln(wLog, "Create File:", fname)
 
