@@ -2,7 +2,6 @@ package enex
 
 import (
 	"fmt"
-	"html"
 	"net/url"
 	"path"
 	"path/filepath"
@@ -133,54 +132,50 @@ type Option struct {
 }
 
 func (exp *Export) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string {
-	exHeader := ""
-	if opt != nil {
-		exHeader = opt.ExHeader
-	}
-	content := "<html><head><meta charset=\"utf-8\">" +
-		exHeader +
-		"</head><body>" +
-		"<en-note class=\"peso\" style=\"white-space: inherit;\">\n" +
-		`<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>` +
-		html.EscapeString(exp.Title) +
-		"</b></h1>\n" +
-		exp.Content +
-		"</en-note></body></html>\n"
-
 	var buffer strings.Builder
-	for {
-		m := rxMedia.FindStringSubmatchIndex(content)
-		if m == nil {
-			buffer.WriteString(content)
-			break
-		}
-		buffer.WriteString(content[:m[0]])
-		attr := parseEnMediaAttr(content[m[2]:m[3]])
-		if hash, ok := attr["hash"]; ok {
-			if rsc, ok := exp.Hash[hash]; ok {
-				rscUrl := makeRscUrl(rsc)
-				if strings.HasPrefix(strings.ToLower(rsc.Mime), "image") {
-					fmt.Fprintf(&buffer, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, rscUrl)
-					if w, ok := attr["width"]; ok {
-						fmt.Fprintf(&buffer, ` width="%s"`, w)
-					}
-					if h, ok := attr["height"]; ok {
-						fmt.Fprintf(&buffer, ` height="%s"`, h)
-					}
-					fmt.Fprintf(&buffer, ` /></a></span>`)
-				} else {
-					fmt.Fprintf(&buffer, `<div class="goenex-attachment-link"><a href="%s">%s</a></div>`,
-						rscUrl,
-						rsc.NewFileName)
-				}
-			} else {
-				fmt.Fprintf(&buffer, `<!-- Error: hash="%s" -->`, hash)
-			}
-		} else {
-			fmt.Fprintf(&buffer, `<!-- Error: hash not found -->`)
-		}
-		content = content[m[1]:]
+
+	buffer.WriteString("<!DOCTYPE html><html><head><meta charset=\"utf-8\">")
+	if opt != nil {
+		buffer.WriteString(opt.ExHeader)
 	}
+	buffer.WriteString(`</head><body>
+<en-note class="peso" style="white-space: inherit;">
+<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`)
+	buffer.WriteString(exp.Title)
+	buffer.WriteString("</b></h1>\n")
+
+	buffer.WriteString(rxMedia.ReplaceAllStringFunc(exp.Content, func(tag string) string {
+		attr := parseEnMediaAttr(tag)
+		hash, ok := attr["hash"]
+		if !ok {
+			return `<!-- Error: hash not found -->`
+		}
+		rsc, ok := exp.Hash[hash]
+		if !ok {
+			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
+		}
+		rscUrl := makeRscUrl(rsc)
+		typ, _, ok := strings.Cut(rsc.Mime, "/")
+		if ok && strings.EqualFold(typ, "image") {
+			// image
+			var b strings.Builder
+			fmt.Fprintf(&b, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, rscUrl)
+			if w, ok := attr["width"]; ok {
+				fmt.Fprintf(&b, ` width="%s"`, w)
+			}
+			if h, ok := attr["height"]; ok {
+				fmt.Fprintf(&b, ` height="%s"`, h)
+			}
+			b.WriteString(" /></a></span>")
+			return b.String()
+		}
+		// non-image attachment
+		return fmt.Sprintf(`<div class="goenex-attachment-link"><a href="%s">%s</a></div>`,
+			rscUrl,
+			rsc.NewFileName)
+
+	}))
+	buffer.WriteString("</en-note></body></html>\n")
 	return buffer.String()
 }
 
