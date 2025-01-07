@@ -1,5 +1,9 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+v0.4.0
+------
+Jan 7, 2025
+
 ## Modified `unenex`
 
 - Replace `<en-todo>` to the unicode of BALLOT BOX (U+2610 or U+2611)

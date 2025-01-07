@@ -1,5 +1,9 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+v0.4.0
+------
+Jan 7, 2025
+
 ## unenex 修正
 
 - `<en-todo>` タグを BALLOT BOX へ置換するようにした (U+2610 or U+2611)
