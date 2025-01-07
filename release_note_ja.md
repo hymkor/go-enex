@@ -53,11 +53,15 @@ Jan 5, 2025
 - 添付ファイルへリンクが独立した行になるように、タグ: `<a>..</a>` は `<div class="goenex-attachment-link">..</div>` で囲むようにした。
 - 添付画像のタグ: `<img>..</img>` は `<span class="goenex-attachment-image">..</span>` で囲むようにした。
 
+Thanks to [@Juelicher-Trainee]
+
 v0.3.5
 ======
 Jan 4, 2025
 
 - enexファイル名の末尾が `..enex` の時、`.` で終わるディレクトリ名を作成しようとするため、Windows ではパス名に不整合が発生する問題を修正。末尾の `.` は削除するようにした。
+
+Thanks to [@Juelicher-Trainee]
 
 v0.3.4
 ======
@@ -68,6 +72,8 @@ Jan 2, 2025
     - ルートには各enexファイル名ディレクトリの index.html or README.md へのリンクをリストした index.html or README.md を置くようにした。
     - 各enexファイル名ディレクトリの index.html or README.md には enex ファイル名の大見出しを入れるようにした。
 - 出力先ディレクトリを指定する `-d DIR` オプションを追加
+
+Thanks to [@Juelicher-Trainee]
 
 v0.3.3
 ======
@@ -86,6 +92,8 @@ Jan 1, 2025
     例: `unenex -st "div{line-height:2.0!important}" *.enex` (CMD.EXE)  
     or  `unenex -st 'div{line-height:2.0!important}' *.enex` (bash)
 - unenex -markdown: README.md に記す URL で空白を表現する `+` のかわりに `%20` を使うようにした
+
+Thanks to [@Juelicher-Trainee]
 
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
@@ -112,6 +120,8 @@ Evernote のスタイルシートは、Evernote社の著作物であるため、
 - 画像のサイズ指定で、画像の原寸や `<en-media>` タグの`--naturalWidth`, `--naturalHeight` の値を使用するのをやめた
 - ログメッセージで `Create xxxx` の後には必ず `: ` を入れるようにした
 
+Thanks to [@Juelicher-Trainee]
+
 v0.3.1
 ======
 Dec 30, 2024
@@ -121,6 +131,8 @@ Dec 30, 2024
 - ファイル名がない添付ファイルの生成に失敗する問題があったため、`Untitled`, `Untitled (2)` と代替ファイル名を与えるようにした
 - 添付ファイルが画像かどうかの判断はファイル名ではなく、MIME の型を使うようにした
 - 英大文字・英小文字が違うだけのファイル名は同一ファイル名が重複していると判断するようにした
+
+Thanks to [@Juelicher-Trainee]
 
 v0.3.0
 ======
@@ -132,12 +144,16 @@ Dec 29, 2024
 - `unenex`: 複数の enex ファイル、および、ワイルドカード指定に対応
 - ([#2]-5) 画像が常に最大サイズで展開されていた問題を修正
 
+Thanks to [@Juelicher-Trainee]
+
 v0.2.1
 ======
 (2024.12.28)
 
 - ([#2]) 非画像ファイルが `<img>` タグで出力HTMLに埋め込まれていたのを、`<a>` でリンクを張るよう修正した。
 - unenex: `-h` オプションで、プログラムバージョン、OS、CPUアーキテクチャも表示するようにした
+
+Thanks to [@Juelicher-Trainee]
 
 v0.2.0
 ======
@@ -159,8 +175,13 @@ v0.1.1
 - イメージのハッシュコードを、ソースURLだけでなく、`<recoIndex objID="...">` からも読み取るようにした
 - `-v` オプションを追加
 
+Thanks to [@Laetgark]
+
 v0.1.0
 ======
 (2023.03.23)
 
 - 初回リリース
+
+[@Juelicher-Trainee]: https://github.com/Juelicher-Trainee
+[@Laetgark]: https://github.com/Laetgark

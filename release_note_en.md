@@ -52,11 +52,15 @@ Jan 5, 2025
 - To ensure proper separation between adjacent links, the `<a>...</a>` tag for attached files is now wrapped in a `<div class="goenex-attachment-link">...</div>` element.
 - The `<img>` tag for attachment images is now wrapped in a `<span class="goenex-attachment-image">...</span>` element.
 
+Thanks to [@Juelicher-Trainee]
+
 v0.3.5
 ======
 Jan 4, 2025
 
 - Fixed an issue where ENEX file names ending with `..enex` caused path inconsistencies on Windows due to attempting to create a directory name ending with `.`. The trailing `.` is now removed automatically.
+
+Thanks to [@Juelicher-Trainee]
 
 v0.3.4
 ======
@@ -67,6 +71,8 @@ Jan 2, 2025
     - A index.html or README.md file is placed in the root directory, listing links to the index.html or README.md files in each ENEX file's directory.
     - Each index.html or README.md in the ENEX file directories includes a heading with the ENEX file name.
 - Added the `-d DIR` option to specify the directory for file output.
+
+Thanks to [@Juelicher-Trainee]
 
 v0.3.3
 ======
@@ -86,6 +92,7 @@ Jan 1, 2025
 - unenex -markdown: `%20` is used instead of `+` for SPACE on URL of README.md
 
 [#2]: https://github.com/hymkor/go-enex/issues/2
+Thanks to [@Juelicher-Trainee]
 
 v0.3.2
 ======
@@ -110,6 +117,8 @@ Since Evernote's stylesheet is copyrighted material owned by Evernote Corporatio
 - Stopped using the original size of images or the values of `--naturalWidth` and `--naturalHeight` from the `<en-media>` tag for specifying image dimensions.
 - Fix: Insert `: ` always after `Create xxxx` on log message
 
+Thanks to [@Juelicher-Trainee]
+
 v0.3.1
 ======
 Dec 30, 2024
@@ -119,6 +128,8 @@ Dec 30, 2024
 - Resolved an issue where generating attachments without file names would fail by assigning substitute file names like `Untitled`, `Untitled (2)`.
 - Changed the method for determining whether an attachment is an image from relying on the file name to using the MIME type.
 - File names that differ only in uppercase or lowercase letters are now considered to be duplicates.
+
+Thanks to [@Juelicher-Trainee]
 
 v0.3.0
 ======
@@ -130,12 +141,16 @@ Dec 29, 2024
 - `unenex` can read multiple enex-files and support wildcards now
 - ([#2]-5) Fix: images were always expanded to full size
 
+Thanks to [@Juelicher-Trainee]
+
 v0.2.1
 ======
 Dec 28, 2024
 
 - [#2] Non-images attachments were embedded with `<img>` tags into output-html as if they were images. Modified to use `<a>` to link attachments
 - unenex: `-h` option shows the version of program, OS and CPU-architecture now
+
+Thanks to [@Juelicher-Trainee]
 
 v0.2.0
 ======
@@ -157,8 +172,13 @@ Aug 21, 2023
 - Read the hash codes of images from `<recoIndex objID="...">` not only source-url.
 - Add `-v` option (verbose)
 
+Thanks to [@Laetgark]
+
 v0.1.0
 ======
 Mar 23, 2023
 
 - The first release.
+
+[@Juelicher-Trainee]: https://github.com/Juelicher-Trainee
+[@Laetgark]: https://github.com/Laetgark
