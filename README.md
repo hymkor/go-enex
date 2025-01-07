@@ -9,7 +9,7 @@ Convert Evernote's export file(\*.enex) into HTML(or markdown) and images.
 - `unenex` : the executable using go-enex
 
 How to use Unenex
----------------------
+-----------------
 
 ### Install
 
@@ -37,9 +37,11 @@ scoop install unenex
 #### Example
 
 ```
-$ unenex [-markdown] ENEX-FILENAME.enex
+$ unenex [-markdown] {ENEX-FILENAME.enex}
 ```
 
+- Square brackets `[ ]` indicate optional arguments.
+- Curly braces `{ }` indicate that the argument can be repeated.
 - `-markdown` makes a makedown file instead of HTML
 
 Library for Go
@@ -97,5 +99,19 @@ func main() {
 }
 ```
 
-- [ReleaseNote(en)](release_note_en.md)
-- [ReleaseNote(ja)](release_note_ja.md)
+License
+-------
+
+MIT License
+
+Acknowledgements
+---------------
+
+- [@Laetgark](https://github.com/Laetgark)
+- [@Juelicher-Trainee](https://github.com/Juelicher-Trainee)
+
+Release notes
+-------------
+
+- [Release Notes (English)](release_note_en.md)
+- [Release Notes (Japanese)](release_note_ja.md)
