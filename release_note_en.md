@@ -43,20 +43,20 @@
 
 v0.3.6
 ======
-Jan 5, 2024
+Jan 5, 2025
 
 - To ensure proper separation between adjacent links, the `<a>...</a>` tag for attached files is now wrapped in a `<div class="goenex-attachment-link">...</div>` element.
 - The `<img>` tag for attachment images is now wrapped in a `<span class="goenex-attachment-image">...</span>` element.
 
 v0.3.5
 ======
-Jan 4, 2024
+Jan 4, 2025
 
 - Fixed an issue where ENEX file names ending with `..enex` caused path inconsistencies on Windows due to attempting to create a directory name ending with `.`. The trailing `.` is now removed automatically.
 
 v0.3.4
 ======
-Jan 2, 2024
+Jan 2, 2025
 
 - Generated data is now stored in a three-level directory structure: (root) → (directory named after the ENEX file) → (directory for attachments of each note).
     - If no ENEX file name is provided and ENEX data is received from standard input, the structure will be limited to two levels: (root) → (directory named after the note).
@@ -66,7 +66,7 @@ Jan 2, 2024
 
 v0.3.3
 ======
-Jan 1, 2024
+Jan 1, 2025
 
 - unenex: Removed `lang="ja"` from the `<html>` tag in index.html.
 - exstyle: Display an error if no stylesheets are found in the given HTML.
