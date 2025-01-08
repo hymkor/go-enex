@@ -2,9 +2,7 @@ package enex
 
 import (
 	"fmt"
-	"net/url"
 	"path"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -94,36 +92,6 @@ func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
 	ext := path.Ext(name)
 	base := name[:len(name)-len(ext)]
 	return fmt.Sprintf("%s (%d)%s", base, serial, ext)
-}
-
-type Attachments struct {
-	Images    map[string]*Resource
-	BaseName  string
-	Dir       string
-	dirEscape string
-	serialNo  _SerialNo
-	sanitizer func(string) string
-}
-
-func newAttachments(note *Note, sanitizer func(string) string) *Attachments {
-	baseName := sanitizer(note.Title)
-	dir := baseName + ".files"
-	dirEscape := url.PathEscape(dir)
-	return &Attachments{
-		Images:    make(map[string]*Resource),
-		BaseName:  baseName,
-		Dir:       dir,
-		dirEscape: dirEscape,
-		serialNo:  make(_SerialNo),
-		sanitizer: sanitizer,
-	}
-}
-
-func (attach *Attachments) makeUrlFor(rsc *Resource) string {
-	name := attach.sanitizer(attach.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
-	rsc.NewFileName = name
-	attach.Images[filepath.Join(attach.Dir, name)] = rsc
-	return path.Join(attach.dirEscape, url.PathEscape(name))
 }
 
 type Option struct {
