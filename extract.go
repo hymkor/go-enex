@@ -202,12 +202,12 @@ var defaultSanitizer = strings.NewReplacer(
 	`:`, `：`,
 )
 
-func (note *Note) Extract(opt *Option) (string, *Attachments) {
+func (note *Note) Extract(opt *Option) (html string, attach *Attachments) {
 	sanitizer := defaultSanitizer.Replace
 	if opt != nil && opt.Sanitizer != nil {
 		sanitizer = opt.Sanitizer
 	}
-	attach := newAttachments(note, sanitizer)
-	content := note.extract(attach.makeUrlFor, opt)
-	return content, attach
+	attach = newAttachments(note, sanitizer)
+	html = note.extract(attach.makeUrlFor, opt)
+	return
 }
