@@ -51,12 +51,9 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 			note.Title,
 		)
 		fname := filepath.Join(rootDir, safeName+".html")
-		fd, err := os.Create(fname)
-		if err != nil {
+		if err := os.WriteFile(fname, []byte(html), 0644); err != nil {
 			return err
 		}
-		io.WriteString(fd, html)
-		fd.Close()
 		fmt.Fprintln(wLog, "Create File:", fname)
 
 		if err := bundle.Extract(rootDir, wLog); err != nil {
