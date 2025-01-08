@@ -26,7 +26,8 @@ func makeDir(rootDir, name string, log io.Writer) error {
 	return nil
 }
 
-func extractAttachment(rootDir string, attachment map[string]*Resource, log io.Writer) error {
+func (A *Attachments) Extract(rootDir string, log io.Writer) error {
+	attachment := A.Images
 	for _fname, data := range attachment {
 		fname := filepath.Join(rootDir, _fname)
 		dir := filepath.Dir(fname)

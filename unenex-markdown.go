@@ -50,7 +50,7 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 		fd.Close()
 		fmt.Fprintln(wLog, "Create File:", fname)
 
-		if err := extractAttachment(rootDir, imgSrc.Images, wLog); err != nil {
+		if err := imgSrc.Extract(rootDir, wLog); err != nil {
 			return err
 		}
 	}
