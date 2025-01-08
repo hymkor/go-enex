@@ -1,5 +1,11 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+-  以下の関数・型の名前を変更した
+    - `Attachments` → `Bundle`
+    - `(*Attachments) Make` → `(*Bundle) makeUrlFor` (unexported)
+    - `(*Note) ToHtml` → `extract` (unexported)
+    - `extractAttachment` → `(*Bundle) Extract`
+
 v0.4.0
 ------
 Jan 7, 2025

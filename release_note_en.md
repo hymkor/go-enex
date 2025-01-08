@@ -1,5 +1,11 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+- Rename these functions and types
+    - `Attachments` → `Bundle`
+    - `(*Attachments) Make` → `(*Bundle) makeUrlFor` (unexported)
+    - `(*Note) ToHtml` → `extract` (unexported)
+    - `extractAttachment` → `(*Bundle) Extract`
+
 v0.4.0
 ------
 Jan 7, 2025
