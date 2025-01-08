@@ -119,7 +119,7 @@ func newAttachments(note *Note, sanitizer func(string) string) *Attachments {
 	}
 }
 
-func (attach *Attachments) Make(rsc *Resource) string {
+func (attach *Attachments) makeUrlFor(rsc *Resource) string {
 	name := attach.sanitizer(attach.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
 	rsc.NewFileName = name
 	attach.Images[filepath.Join(attach.Dir, name)] = rsc
@@ -208,6 +208,6 @@ func (note *Note) Extract(opt *Option) (string, *Attachments) {
 		sanitizer = opt.Sanitizer
 	}
 	attach := newAttachments(note, sanitizer)
-	content := note.extract(attach.Make, opt)
+	content := note.extract(attach.makeUrlFor, opt)
 	return content, attach
 }
