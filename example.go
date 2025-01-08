@@ -20,18 +20,18 @@ func mains() error {
 		return err
 	}
 	for _, note := range notes {
-		html, imgSrc := note.Extract(nil)
-		baseName := imgSrc.BaseName
+		html, bundle := note.Extract(nil)
+		baseName := bundle.BaseName
 		err := os.WriteFile(baseName+".html", []byte(html), 0644)
 		if err != nil {
 			return err
 		}
 		fmt.Fprintf(os.Stderr, "Create File: %s.html (%d bytes)\n", baseName, len(html))
 
-		if len(imgSrc.Images) > 0 {
-			fmt.Fprintf(os.Stderr, "Create Dir: %s", imgSrc.Dir)
-			os.Mkdir(imgSrc.Dir, 0755)
-			for fname, rsc := range imgSrc.Images {
+		if len(bundle.Images) > 0 {
+			fmt.Fprintf(os.Stderr, "Create Dir: %s", bundle.Dir)
+			os.Mkdir(bundle.Dir, 0755)
+			for fname, rsc := range bundle.Images {
 				data, err := rsc.Data()
 				if err != nil {
 					return err

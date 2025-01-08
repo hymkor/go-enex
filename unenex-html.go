@@ -43,8 +43,8 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 	opt := &Option{ExHeader: styleSheet}
 
 	for _, note := range exports {
-		html, imgSrc := note.Extract(opt)
-		safeName := imgSrc.BaseName
+		html, bundle := note.Extract(opt)
+		safeName := bundle.BaseName
 
 		fmt.Fprintf(index, "<li><a href=\"%s\">%s</a></li>\n",
 			url.PathEscape(safeName+".html"),
@@ -59,7 +59,7 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 		fd.Close()
 		fmt.Fprintln(wLog, "Create File:", fname)
 
-		if err := imgSrc.Extract(rootDir, wLog); err != nil {
+		if err := bundle.Extract(rootDir, wLog); err != nil {
 			return err
 		}
 	}

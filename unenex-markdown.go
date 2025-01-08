@@ -31,8 +31,8 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 	}
 
 	for _, note := range exports {
-		html, imgSrc := note.Extract(nil)
-		safeName := imgSrc.BaseName
+		html, bundle := note.Extract(nil)
+		safeName := bundle.BaseName
 
 		fmt.Fprintf(index, "* [%s](%s)\n",
 			note.Title,
@@ -50,7 +50,7 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 		fd.Close()
 		fmt.Fprintln(wLog, "Create File:", fname)
 
-		if err := imgSrc.Extract(rootDir, wLog); err != nil {
+		if err := bundle.Extract(rootDir, wLog); err != nil {
 			return err
 		}
 	}
