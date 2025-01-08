@@ -6,6 +6,7 @@
     - `(*Note) ToHtml` → `extract` (unexported)
     - `extractAttachment` → `(*Bundle) Extract`
     - `Attachment.Images` → `Bundle.Resource`
+- 型・関数にヘッダコメントを記入
 
 v0.4.0
 ------

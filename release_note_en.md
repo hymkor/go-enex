@@ -6,6 +6,7 @@
     - `(*Note) ToHtml` → `extract` (unexported)
     - `extractAttachment` → `(*Bundle) Extract`
     - `Attachment.Images` → `Bundle.Resource`
+- Added header comments to types and functions
 
 v0.4.0
 ------
