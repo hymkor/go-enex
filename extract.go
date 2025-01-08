@@ -141,7 +141,7 @@ var enTagReplacer = strings.NewReplacer(
 	`<en-todo checked="true" />`, _BALLOT_BOX_WITH_CHECK,
 )
 
-func (note *Note) ToHtml(makeRscUrl func(*Resource) string, opt *Option) string {
+func (note *Note) extract(makeRscUrl func(*Resource) string, opt *Option) string {
 	var buffer strings.Builder
 
 	buffer.WriteString("<!DOCTYPE html><html><head><meta charset=\"utf-8\">")
@@ -208,6 +208,6 @@ func (note *Note) Extract(opt *Option) (string, *Attachments) {
 		sanitizer = opt.Sanitizer
 	}
 	attach := newAttachments(note, sanitizer)
-	content := note.ToHtml(attach.Make, opt)
+	content := note.extract(attach.Make, opt)
 	return content, attach
 }
