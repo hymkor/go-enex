@@ -5,6 +5,7 @@
     - `(*Attachments) Make` → `(*Bundle) makeUrlFor` (unexported)
     - `(*Note) ToHtml` → `extract` (unexported)
     - `extractAttachment` → `(*Bundle) Extract`
+    - `Attachment.Images` → `Bundle.Resource`
 
 v0.4.0
 ------
