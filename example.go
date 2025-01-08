@@ -28,10 +28,10 @@ func mains() error {
 		}
 		fmt.Fprintf(os.Stderr, "Create File: %s.html (%d bytes)\n", baseName, len(html))
 
-		if len(bundle.Images) > 0 {
+		if len(bundle.Resource) > 0 {
 			fmt.Fprintf(os.Stderr, "Create Dir: %s", bundle.Dir)
 			os.Mkdir(bundle.Dir, 0755)
-			for fname, rsc := range bundle.Images {
+			for fname, rsc := range bundle.Resource {
 				data, err := rsc.Data()
 				if err != nil {
 					return err

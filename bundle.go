@@ -10,7 +10,7 @@ import (
 )
 
 type Bundle struct {
-	Images    map[string]*Resource
+	Resource  map[string]*Resource
 	BaseName  string
 	Dir       string
 	dirEscape string
@@ -23,7 +23,7 @@ func newBundle(note *Note, sanitizer func(string) string) *Bundle {
 	dir := baseName + ".files"
 	dirEscape := url.PathEscape(dir)
 	return &Bundle{
-		Images:    make(map[string]*Resource),
+		Resource:  make(map[string]*Resource),
 		BaseName:  baseName,
 		Dir:       dir,
 		dirEscape: dirEscape,
@@ -35,12 +35,12 @@ func newBundle(note *Note, sanitizer func(string) string) *Bundle {
 func (B *Bundle) makeUrlFor(rsc *Resource) string {
 	name := B.sanitizer(B.serialNo.ToUniqName(rsc.Mime, rsc.FileName, rsc.Hash))
 	rsc.NewFileName = name
-	B.Images[filepath.Join(B.Dir, name)] = rsc
+	B.Resource[filepath.Join(B.Dir, name)] = rsc
 	return path.Join(B.dirEscape, url.PathEscape(name))
 }
 
 func (B *Bundle) Extract(rootDir string, log io.Writer) error {
-	for _fname, data := range B.Images {
+	for _fname, data := range B.Resource {
 		fname := filepath.Join(rootDir, _fname)
 		dir := filepath.Dir(fname)
 		if stat, err := os.Stat(dir); os.IsNotExist(err) {
