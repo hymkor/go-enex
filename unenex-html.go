@@ -14,6 +14,10 @@ const indexHtmlHeader = `<!DOCTYPE html><html><head>
 
 const indexHtmlFooter = "</body></html>"
 
+// ToHtmls converts a single ENEX file into HTML format.
+// The output HTML is saved under the directory specified by rootDir, with enexName as the note name.
+// The content is read from source, the styleSheet is applied to the HTML,
+// and debug and log information is written to wDebug and wLog, respectively.
 func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug, wLog io.Writer) error {
 	exports, err := Parse(source, wDebug)
 	if err != nil {
@@ -63,6 +67,9 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 	return nil
 }
 
+// FilesToHtmls converts multiple ENEX files into HTML format.
+// The output HTML files are saved under the directory specified by rootDir, with each ENEX file being processed.
+// The styleSheet is applied to the HTML, and debug and log information are written to wDebug and wLog, respectively.
 func FilesToHtmls(rootDir, styleSheet string, enexFiles []string, wDebug, wLog io.Writer) error {
 	wIndex, err := os.Create(filepath.Join(rootDir, "index.html"))
 	if err != nil {

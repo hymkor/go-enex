@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 )
 
+// Bundle is a type that contains information about attachments.
 type Bundle struct {
 	Resource  map[string]*Resource
 	BaseName  string
@@ -39,6 +40,9 @@ func (B *Bundle) makeUrlFor(rsc *Resource) string {
 	return path.Join(B.dirEscape, url.PathEscape(name))
 }
 
+// Extract saves all attachments into subdirectories under rootDir.
+// Each attachment is saved in a subdirectory named after the original note's name,
+// formatted as "(note-name).files", with its respective filename.
 func (B *Bundle) Extract(rootDir string, log io.Writer) error {
 	for _fname, data := range B.Resource {
 		fname := filepath.Join(rootDir, _fname)

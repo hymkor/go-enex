@@ -94,6 +94,8 @@ func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
 	return fmt.Sprintf("%s (%d)%s", base, serial, ext)
 }
 
+// Option represents the sanitization method and additional headers,
+// and may store other relevant information for HTML conversion in the future.
 type Option struct {
 	ExHeader  string
 	Sanitizer func(string) string
@@ -170,6 +172,8 @@ var defaultSanitizer = strings.NewReplacer(
 	`:`, `：`,
 )
 
+// Extract converts the data of the note into HTML and outputs the attachments as a Bundle.
+// The sanitization method and additional headers can be specified via opt.
 func (note *Note) Extract(opt *Option) (html string, bundle *Bundle) {
 	sanitizer := defaultSanitizer.Replace
 	if opt != nil && opt.Sanitizer != nil {

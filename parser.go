@@ -43,6 +43,7 @@ type xmlEnNote struct {
 	Text    string   `xml:",innerxml"`
 }
 
+// Resource represents information about an attachment.
 type Resource struct {
 	data        string
 	Mime        string
@@ -54,16 +55,19 @@ type Resource struct {
 	NewFileName string
 }
 
+// WriteTo writes the attachment data from rsc to w.
 func (rsc *Resource) WriteTo(w io.Writer) (int64, error) {
 	strReader := strings.NewReader(rsc.data)
 	binReader := base64.NewDecoder(base64.StdEncoding, strReader)
 	return io.Copy(w, binReader)
 }
 
+// Data returns the attachment data stored in rsc.
 func (rsc *Resource) Data() ([]byte, error) {
 	return base64.StdEncoding.DecodeString(rsc.data)
 }
 
+// Note is a type that contains information about note.
 type Note struct {
 	Title    string
 	Content  string
@@ -71,6 +75,8 @@ type Note struct {
 	Hash     map[string]*Resource   // hash to the one resource
 }
 
+// Parse reads the content of an enex file and creates instances of Note.
+// Logs are written to the provided warn writer.
 func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
