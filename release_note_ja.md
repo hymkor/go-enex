@@ -1,5 +1,9 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+v0.4.1
+======
+Jan 8, 2025
+
 -  以下の関数・型の名前を変更した
     - `Attachments` → `Bundle`
     - `(*Attachments) Make` → `(*Bundle) makeUrlFor` (unexported)
@@ -9,7 +13,7 @@
 - 型・関数にヘッダコメントを記入
 
 v0.4.0
-------
+======
 Jan 7, 2025
 
 ## unenex 修正

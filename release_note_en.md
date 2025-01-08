@@ -1,5 +1,9 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+v0.4.1
+======
+Jan 8, 2025
+
 - Rename these functions and types
     - `Attachments` → `Bundle`
     - `(*Attachments) Make` → `(*Bundle) makeUrlFor` (unexported)
@@ -9,7 +13,7 @@
 - Added header comments to types and functions
 
 v0.4.0
-------
+======
 Jan 7, 2025
 
 ## Modified `unenex`
