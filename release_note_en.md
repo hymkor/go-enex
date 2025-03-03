@@ -1,5 +1,18 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+## Modifications to `unenex`
+
+- Added the `-web-clip-only` option to extract only essential web content from Evernote web-clip notes. This option removes Evernote-specific styling and non-web-clip elements, producing cleaner HTML that closely resembles the original web page.
+
+## Modifications to the `go-enex` package
+
+- Added the `webClipOnly bool` parameter to the `FilesToHtmls` function.
+
+Thanks [@mikaeloduh] for [#3].
+
+[@mikaeloduh]: https://github.com/mikaeloduh
+[#3]: https://github.com/hymkor/go-enex/pull/3
+
 v0.4.1
 ======
 Jan 8, 2025

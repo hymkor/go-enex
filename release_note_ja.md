@@ -1,5 +1,18 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+## unenex 修正
+
+- `-web-clip-only` オプションを追加。Evernote のウェブクリップノートから必要なウェブコンテンツのみを抽出できるようにした。Evernote 固有のスタイルやウェブクリップ以外の要素を削除し、元のウェブページに近いクリーンな HTML を生成する
+
+## go-enex パッケージ修正
+
+- 関数`FilesToHtmls` に引数 `webClipOnly bool` を追加
+
+Thanks [@mikaeloduh] for [#3].
+
+[@mikaeloduh]: https://github.com/mikaeloduh
+[#3]: https://github.com/hymkor/go-enex/pull/3
+
 v0.4.1
 ======
 Jan 8, 2025
