@@ -1,6 +1,7 @@
 package enex
 
 import (
+	"encoding/xml"
 	"fmt"
 	"path"
 	"regexp"
@@ -8,7 +9,10 @@ import (
 	"unicode/utf8"
 )
 
-var rxMedia = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
+var (
+	rxMedia   = regexp.MustCompile(`(?s)\s*<en-media([^>]*)>\s*`)
+	rxEmptyBr = regexp.MustCompile(`<br\s*/?>`)
+)
 
 func parseEnMediaAttr(s string) map[string]string {
 	result := map[string]string{}
@@ -97,8 +101,9 @@ func (s _SerialNo) ToUniqName(mime, name string, hash string) string {
 // Option represents the sanitization method and additional headers,
 // and may store other relevant information for HTML conversion in the future.
 type Option struct {
-	ExHeader  string
-	Sanitizer func(string) string
+	ExHeader    string
+	Sanitizer   func(string) string
+	WebClipOnly bool // If true, only output the web-clip content without Evernote styling
 }
 
 const (
@@ -114,18 +119,21 @@ var enTagReplacer = strings.NewReplacer(
 func (note *Note) extract(makeRscUrl func(*Resource) string, opt *Option) string {
 	var buffer strings.Builder
 
-	buffer.WriteString("<!DOCTYPE html><html><head><meta charset=\"utf-8\">")
-	if opt != nil {
-		buffer.WriteString(opt.ExHeader)
-	}
-	buffer.WriteString(`</head><body>
-<en-note class="peso" style="white-space: inherit;">
-<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`)
-	buffer.WriteString(note.Title)
-	buffer.WriteString("</b></h1>\n")
+	// Get the content
+	content := note.Content
 
-	content := enTagReplacer.Replace(note.Content)
-	buffer.WriteString(rxMedia.ReplaceAllStringFunc(content, func(tag string) string {
+	// Parse the content as XML to extract just the inner content
+	var enNote xmlEnNote
+	if err := xml.Unmarshal([]byte(content), &enNote); err == nil {
+		content = enNote.Text
+	}
+
+	// Remove empty br tags
+	content = rxEmptyBr.ReplaceAllString(content, "")
+
+	// Process any en-media tags in the content
+	content = enTagReplacer.Replace(content)
+	content = rxMedia.ReplaceAllStringFunc(content, func(tag string) string {
 		attr := parseEnMediaAttr(tag)
 		hash, ok := attr["hash"]
 		if !ok {
@@ -140,23 +148,69 @@ func (note *Note) extract(makeRscUrl func(*Resource) string, opt *Option) string
 		if ok && strings.EqualFold(typ, "image") {
 			// image
 			var b strings.Builder
-			fmt.Fprintf(&b, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, rscUrl)
+			if opt != nil && opt.WebClipOnly {
+				// Simple image tag for web-clip mode
+				fmt.Fprintf(&b, `<img src="%s"`, rscUrl)
+			} else {
+				// Original styled image tag
+				fmt.Fprintf(&b, `<span class="goenex-attachment-image"><a href="%[1]s"><img src="%[1]s" border="0"`, rscUrl)
+			}
 			if w, ok := attr["width"]; ok {
 				fmt.Fprintf(&b, ` width="%s"`, w)
 			}
 			if h, ok := attr["height"]; ok {
 				fmt.Fprintf(&b, ` height="%s"`, h)
 			}
-			b.WriteString(" /></a></span>")
+			if opt != nil && opt.WebClipOnly {
+				b.WriteString(` />`)
+			} else {
+				b.WriteString(` /></a></span>`)
+			}
 			return b.String()
 		}
 		// non-image attachment
-		return fmt.Sprintf(`<div class="goenex-attachment-link"><a href="%s">%s</a></div>`,
-			rscUrl,
-			rsc.NewFileName)
+		if opt != nil && opt.WebClipOnly {
+			return fmt.Sprintf(`<a href="%s">%s</a>`, rscUrl, rsc.NewFileName)
+		}
+		return fmt.Sprintf(`<div class="goenex-attachment-link"><a href="%s">%s</a></div>`, rscUrl, rsc.NewFileName)
+	})
 
-	}))
-	buffer.WriteString("</en-note></body></html>\n")
+	// Build the final HTML
+	if opt != nil && opt.WebClipOnly {
+		// Web-clip mode: minimal HTML structure
+		return fmt.Sprintf(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%%;
+	height: 100%%;
+}
+</style>
+</head>
+<body>
+%s
+</body>
+</html>`, content)
+	}
+
+	// Original mode: full Evernote styling
+	buffer.WriteString("<!DOCTYPE html><html><head><meta charset=\"utf-8\">")
+	if opt != nil {
+		buffer.WriteString(opt.ExHeader)
+	}
+	buffer.WriteString(`</head><body>
+<en-note class="peso" style="white-space: inherit;">
+<h1 class="noteTitle html-note" style="font-family: Source Sans Pro,-apple-system,system-ui,Segoe UI,Roboto, Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif; margin-top: 21px; margin-bottom: 21px; font-size: 32px;"><b>`)
+	buffer.WriteString(note.Title)
+	buffer.WriteString("</b></h1>\n")
+	buffer.WriteString(content)
+	buffer.WriteString(`
+</en-note>
+</body></html>`)
 	return buffer.String()
 }
 

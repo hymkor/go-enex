@@ -20,6 +20,7 @@ var (
 	optionStyleFile   = flag.String("sf", "", "Specify a stylesheet file `path`")
 	optionStyleInline = flag.String("st", "", "Specify `stylesheet` text directly as a string.")
 	optionRootDir     = flag.String("d", ".", "Output `directory`")
+	optionWebClipOnly = flag.Bool("web-clip-only", false, "Only output web-clip content without Evernote styling")
 )
 
 func expandWildcard(args []string) []string {
@@ -73,7 +74,7 @@ func mains(args []string) error {
 				return err
 			}
 		} else {
-			if err := enex.ToHtmls(*optionRootDir, "", source, "", verbose, os.Stderr); err != nil {
+			if err := enex.ToHtmls(*optionRootDir, "", source, "", *optionWebClipOnly, verbose, os.Stderr); err != nil {
 				return err
 			}
 		}
@@ -84,7 +85,7 @@ func mains(args []string) error {
 	if *optionMarkdown {
 		return enex.FilesToMarkdowns(*optionRootDir, goDown, _args, verbose, os.Stderr)
 	}
-	return enex.FilesToHtmls(*optionRootDir, styleSheet, _args, verbose, os.Stderr)
+	return enex.FilesToHtmls(*optionRootDir, styleSheet, _args, *optionWebClipOnly, verbose, os.Stderr)
 }
 
 var version string

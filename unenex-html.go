@@ -18,7 +18,8 @@ const indexHtmlFooter = "</body></html>"
 // The output HTML is saved under the directory specified by rootDir, with enexName as the note name.
 // The content is read from source, the styleSheet is applied to the HTML,
 // and debug and log information is written to wDebug and wLog, respectively.
-func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug, wLog io.Writer) error {
+// If webClipOnly is true, only the web-clip content will be output without Evernote styling.
+func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, webClipOnly bool, wDebug, wLog io.Writer) error {
 	exports, err := Parse(source, wDebug)
 	if err != nil {
 		return err
@@ -44,7 +45,10 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 		index.Close()
 	}()
 
-	opt := &Option{ExHeader: styleSheet}
+	opt := &Option{
+		ExHeader:    styleSheet,
+		WebClipOnly: webClipOnly,
+	}
 
 	for _, note := range exports {
 		html, bundle := note.Extract(opt)
@@ -70,7 +74,8 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, wDebug,
 // FilesToHtmls converts multiple ENEX files into HTML format.
 // The output HTML files are saved under the directory specified by rootDir, with each ENEX file being processed.
 // The styleSheet is applied to the HTML, and debug and log information are written to wDebug and wLog, respectively.
-func FilesToHtmls(rootDir, styleSheet string, enexFiles []string, wDebug, wLog io.Writer) error {
+// If webClipOnly is true, only the web-clip content will be output without Evernote styling.
+func FilesToHtmls(rootDir, styleSheet string, enexFiles []string, webClipOnly bool, wDebug, wLog io.Writer) error {
 	wIndex, err := os.Create(filepath.Join(rootDir, "index.html"))
 	if err != nil {
 		return err
@@ -89,7 +94,7 @@ func FilesToHtmls(rootDir, styleSheet string, enexFiles []string, wDebug, wLog i
 			return err
 		}
 		enexName := getEnexBaseName(enexFileName)
-		if err := ToHtmls(rootDir, enexName, data, styleSheet, wDebug, wLog); err != nil {
+		if err := ToHtmls(rootDir, enexName, data, styleSheet, webClipOnly, wDebug, wLog); err != nil {
 			return err
 		}
 		fmt.Fprintf(wIndex, "<li><a href=\"%s/index.html\">%s</a></li>\n",
