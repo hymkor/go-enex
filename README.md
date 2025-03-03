@@ -15,7 +15,7 @@ How to use Unenex
 
 Download the binary package from [Releases](https://github.com/hymkor/go-enex/releases) and extract the executable.
 
-### Use `go install`
+#### Use `go install`
 
 ```
 go install github.com/hymkor/go-enex/cmd/unenex@latest
@@ -34,15 +34,19 @@ scoop bucket add hymkor https://github.com/hymkor/scoop-bucket
 scoop install unenex
 ```
 
-#### Example
+### Usage
 
 ```
-$ unenex [-markdown] {ENEX-FILENAME.enex}
+$ unenex {options} {ENEX-FILENAME.enex}
 ```
 
-- Square brackets `[ ]` indicate optional arguments.
-- Curly braces `{ }` indicate that the argument can be repeated.
-- `-markdown` makes a makedown file instead of HTML
+Available Options
+
+- `-d directory`: Specifies the output directory (default is the current directory `"."`).
+- `-markdown`: Outputs the content in shrinked markdown format.
+- `-sf path`: Specifies the path to a stylesheet file.
+- `-st stylesheet`: Specifies the stylesheet directly as a string.
+- `-v`: Enables verbose mode to display additional information during execution.
 
 Library for Go
 --------------
@@ -109,6 +113,7 @@ Acknowledgements
 
 - [@Laetgark](https://github.com/Laetgark)
 - [@Juelicher-Trainee](https://github.com/Juelicher-Trainee)
+- [@mikaeloduh](https://github.com/mikaeloduh)
 
 Release notes
 -------------
