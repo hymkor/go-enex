@@ -1,5 +1,9 @@
 [Top](./README.md) / English / [Japanese](./release_note_ja.md)
 
+v0.5.0
+======
+Mar 3, 2025
+
 ## Modifications to `unenex`
 
 - Added the `-web-clip-only` option to extract only essential web content from Evernote web-clip notes. This option removes Evernote-specific styling and non-web-clip elements, producing cleaner HTML that closely resembles the original web page.

@@ -1,5 +1,9 @@
 [Top](./README.md) / [English](./release_note_en.md) / Japanese
 
+v0.5.0
+======
+Mar 3, 2025
+
 ## unenex 修正
 
 - `-web-clip-only` オプションを追加。Evernote のウェブクリップノートから必要なウェブコンテンツのみを抽出できるようにした。Evernote 固有のスタイルやウェブクリップ以外の要素を削除し、元のウェブページに近いクリーンな HTML を生成する
