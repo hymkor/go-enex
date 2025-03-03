@@ -47,6 +47,7 @@ Available Options
 - `-sf path`: Specifies the path to a stylesheet file.
 - `-st stylesheet`: Specifies the stylesheet directly as a string.
 - `-v`: Enables verbose mode to display additional information during execution.
+- `-web-clip-only`: Outputs only the web-clip content, removing Evernote-specific styling and non-web-clip elements.
 
 Library for Go
 --------------
