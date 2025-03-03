@@ -41,6 +41,7 @@ type xmlNote struct {
 type xmlEnNote struct {
 	XMLName xml.Name `xml:"en-note"`
 	Text    string   `xml:",innerxml"`
+	WebClip bool     `xml:"web-clip,attr"`
 }
 
 // Resource represents information about an attachment.
