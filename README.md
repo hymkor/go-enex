@@ -104,20 +104,29 @@ func main() {
 }
 ```
 
-License
--------
-
-MIT License
-
-Acknowledgements
----------------
-
-- [@Laetgark](https://github.com/Laetgark)
-- [@Juelicher-Trainee](https://github.com/Juelicher-Trainee)
-- [@mikaeloduh](https://github.com/mikaeloduh)
-
 Release notes
 -------------
 
 - [Release Notes (English)](release_note_en.md)
 - [Release Notes (Japanese)](release_note_ja.md)
+
+Acknowledgements
+---------------
+
+- [Laetgark](https://github.com/Laetgark) - [#1]
+- [Juelicher-Trainee](https://github.com/Juelicher-Trainee) - [#2]
+- [mikaeloduh (Michael D)](https://github.com/mikaeloduh) - [#3]
+
+[#1]: https://github.com/hymkor/go-enex/issues/1
+[#2]: https://github.com/hymkor/go-enex/issues/2
+[#3]: https://github.com/hymkor/go-enex/pull/3
+
+Author
+------
+
+- [hymkor (HAYAMA Kaoru)](https://github.com/hymkor)
+
+License
+-------
+
+MIT License
