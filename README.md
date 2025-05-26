@@ -104,6 +104,16 @@ func main() {
 }
 ```
 
+FAQ
+---
+
+### Q. Sometimes attachments are not exported
+
+Evernote has multiple variations of the `.enex` export format, and some versions may use structures that go-enex does not yet handle correctly.  
+
+If you encounter this problem and are able to provide an example `.enex` file that reproduces it (with sensitive content removed if necessary), please open an issue and share it.  
+While I cannot guarantee immediate support for all `.enex` variations, I will do my best to make go-enex compatible.
+
 Release notes
 -------------
 
