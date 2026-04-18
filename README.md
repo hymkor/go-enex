@@ -114,11 +114,11 @@ Evernote has multiple variations of the `.enex` export format, and some versions
 If you encounter this problem and are able to provide an example `.enex` file that reproduces it (with sensitive content removed if necessary), please open an issue and share it.  
 While I cannot guarantee immediate support for all `.enex` variations, I will do my best to make go-enex compatible.
 
-Release notes
--------------
+Changelog
+---------
 
-- [Release Notes (English)](release_note_en.md)
-- [Release Notes (Japanese)](release_note_ja.md)
+- [(English)](CHANGELOG.md)
+- [(Japanese)](CHANGELOG_ja.md)
 
 Acknowledgements
 ---------------

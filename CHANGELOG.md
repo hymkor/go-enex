@@ -1,7 +1,9 @@
-[Top](./README.md) / English / [Japanese](./release_note_ja.md)
+Changelog
+=========
+[Top](./README.md) / English / [Japanese](./CHANGELOG_ja.md)
 
 v0.5.0
-======
+------
 Mar 3, 2025
 
 ## Modifications to `unenex`
@@ -18,7 +20,7 @@ Thanks [@mikaeloduh] for [#3].
 [#3]: https://github.com/hymkor/go-enex/pull/3
 
 v0.4.1
-======
+------
 Jan 8, 2025
 
 - Rename these functions and types
@@ -30,7 +32,7 @@ Jan 8, 2025
 - Added header comments to types and functions
 
 v0.4.0
-======
+------
 Jan 7, 2025
 
 ## Modified `unenex`
@@ -75,7 +77,7 @@ Jan 7, 2025
 - The method `(*Export) HtmlAndDir` has been renamed to `(*Note) Extract`, allowing detailed specifications through the `Option` type in its arguments.
 
 v0.3.6
-======
+------
 Jan 5, 2025
 
 - To ensure proper separation between adjacent links, the `<a>...</a>` tag for attached files is now wrapped in a `<div class="goenex-attachment-link">...</div>` element.
@@ -84,7 +86,7 @@ Jan 5, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.5
-======
+------
 Jan 4, 2025
 
 - Fixed an issue where ENEX file names ending with `..enex` caused path inconsistencies on Windows due to attempting to create a directory name ending with `.`. The trailing `.` is now removed automatically.
@@ -92,7 +94,7 @@ Jan 4, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.4
-======
+------
 Jan 2, 2025
 
 - Generated data is now stored in a three-level directory structure: (root) → (directory named after the ENEX file) → (directory for attachments of each note).
@@ -104,7 +106,7 @@ Jan 2, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.3
-======
+------
 Jan 1, 2025
 
 - unenex: Removed `lang="ja"` from the `<html>` tag in index.html.
@@ -124,7 +126,7 @@ Jan 1, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.2
-======
+------
 Dec 31, 2024
 
 ## Specifying Style-Sheets
@@ -149,7 +151,7 @@ Since Evernote's stylesheet is copyrighted material owned by Evernote Corporatio
 Thanks to [@Juelicher-Trainee]
 
 v0.3.1
-======
+------
 Dec 30, 2024
 
 - Fix: the link text for the attachment was encoded as URL that should not [#2]
@@ -161,7 +163,7 @@ Dec 30, 2024
 Thanks to [@Juelicher-Trainee]
 
 v0.3.0
-======
+------
 Dec 29, 2024
 
 - ([#2]) Do not rename filenames as possible
@@ -173,7 +175,7 @@ Dec 29, 2024
 Thanks to [@Juelicher-Trainee]
 
 v0.2.1
-======
+------
 Dec 28, 2024
 
 - [#2] Non-images attachments were embedded with `<img>` tags into output-html as if they were images. Modified to use `<a>` to link attachments
@@ -182,7 +184,7 @@ Dec 28, 2024
 Thanks to [@Juelicher-Trainee]
 
 v0.2.0
-======
+------
 May 3,2024
 
 - New executable `unenex`
@@ -195,7 +197,7 @@ May 3,2024
 - Fix the problem decode failed when the encoding text has spaces as prefix or postfix
 
 v0.1.1
-======
+------
 Aug 21, 2023
 
 - Read the hash codes of images from `<recoIndex objID="...">` not only source-url.
@@ -204,7 +206,7 @@ Aug 21, 2023
 Thanks to [@Laetgark]
 
 v0.1.0
-======
+------
 Mar 23, 2023
 
 - The first release.

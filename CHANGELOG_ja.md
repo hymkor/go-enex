@@ -1,7 +1,9 @@
-[Top](./README.md) / [English](./release_note_en.md) / Japanese
+Changelog
+=========
+[Top](./README.md) / [English](./CHANGELOG.md) / Japanese
 
 v0.5.0
-======
+------
 Mar 3, 2025
 
 ## unenex 修正
@@ -18,7 +20,7 @@ Thanks [@mikaeloduh] for [#3].
 [#3]: https://github.com/hymkor/go-enex/pull/3
 
 v0.4.1
-======
+------
 Jan 8, 2025
 
 -  以下の関数・型の名前を変更した
@@ -30,7 +32,7 @@ Jan 8, 2025
 - 型・関数にヘッダコメントを記入
 
 v0.4.0
-======
+------
 Jan 7, 2025
 
 ## unenex 修正
@@ -76,7 +78,7 @@ Jan 7, 2025
 - メソッド: `(*Export) HtmlAndDir` を `(*Note) Extract` へ改名し、引数の`Option`型で細かい指定を行えるようにした。
 
 v0.3.6
-======
+------
 Jan 5, 2025
 
 - 添付ファイルへリンクが独立した行になるように、タグ: `<a>..</a>` は `<div class="goenex-attachment-link">..</div>` で囲むようにした。
@@ -85,7 +87,7 @@ Jan 5, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.5
-======
+------
 Jan 4, 2025
 
 - enexファイル名の末尾が `..enex` の時、`.` で終わるディレクトリ名を作成しようとするため、Windows ではパス名に不整合が発生する問題を修正。末尾の `.` は削除するようにした。
@@ -93,7 +95,7 @@ Jan 4, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.4
-======
+------
 Jan 2, 2025
 
 - 生成データは (ルート) → (enexファイル名ディレクトリ) → (ノート名の添付ファイル置き場用ディレクトリ) と3階層のディレクトリに格納するようにした。
@@ -105,7 +107,7 @@ Jan 2, 2025
 Thanks to [@Juelicher-Trainee]
 
 v0.3.3
-======
+------
 Jan 1, 2025
 
 - unenex: `index.html` の `<html>` タグより `lang="ja"` を削除
@@ -127,7 +129,7 @@ Thanks to [@Juelicher-Trainee]
 [#2]: https://github.com/hymkor/go-enex/issues/2
 
 v0.3.2
-======
+------
 Dec 31, 2024
 
 ## スタイルシート指定
@@ -152,7 +154,7 @@ Evernote のスタイルシートは、Evernote社の著作物であるため、
 Thanks to [@Juelicher-Trainee]
 
 v0.3.1
-======
+------
 Dec 30, 2024
 
 - 添付ファイルのリンクテキストが URL エンコードされたものになっていた不具合を修正 [#2]
@@ -164,7 +166,7 @@ Dec 30, 2024
 Thanks to [@Juelicher-Trainee]
 
 v0.3.0
-======
+------
 Dec 29, 2024
 
 - ([#2]) ファイル名を必要以上にリネームしないようにした。
@@ -176,7 +178,7 @@ Dec 29, 2024
 Thanks to [@Juelicher-Trainee]
 
 v0.2.1
-======
+------
 (2024.12.28)
 
 - ([#2]) 非画像ファイルが `<img>` タグで出力HTMLに埋め込まれていたのを、`<a>` でリンクを張るよう修正した。
@@ -185,7 +187,7 @@ v0.2.1
 Thanks to [@Juelicher-Trainee]
 
 v0.2.0
-======
+------
 (2024.05.03)
 
 - 新しい実行ファイル `unenex` を用意
@@ -198,7 +200,7 @@ v0.2.0
 - 添付ファイルのテキストエンコード表現の前後に空白がある時、デコードに失敗する問題を修正
 
 v0.1.1
-======
+------
 (2023.08.21)
 
 - イメージのハッシュコードを、ソースURLだけでなく、`<recoIndex objID="...">` からも読み取るようにした
@@ -207,7 +209,7 @@ v0.1.1
 Thanks to [@Laetgark]
 
 v0.1.0
-======
+------
 (2023.03.23)
 
 - 初回リリース
