@@ -2,6 +2,7 @@ package enex
 
 import (
 	"fmt"
+	"io"
 	"path"
 	"regexp"
 	"strings"
@@ -46,12 +47,12 @@ func parseEnMediaAttr(s string) map[string]string {
 				break
 			}
 			if strings.ContainsRune(" \v\t\r\n", c) {
-				result[name.String()] = ""
+				//result[name.String()] = ""
 				break
 			}
 			name.WriteRune(c)
 			if len(s) <= 0 {
-				result[name.String()] = ""
+				//result[name.String()] = ""
 				return result
 			}
 			c, siz = utf8.DecodeRuneInString(s)
@@ -103,6 +104,8 @@ type Option struct {
 	ExHeader    string
 	Sanitizer   func(string) string
 	WebClipOnly bool // If true, only output the web-clip content without Evernote styling
+	Log         io.Writer
+	NoFallback  bool
 }
 
 const (
@@ -130,17 +133,22 @@ func (note *Note) extract(makeRscUrl func(*Resource) string, opt *Option) string
 	// Remove empty br tags
 	content = rxEmptyBr.ReplaceAllString(content, "")
 
+	log := io.Discard
+	if opt != nil && opt.Log != nil {
+		log = opt.Log
+	}
+	noFallback := false
+	if opt != nil {
+		noFallback = opt.NoFallback
+	}
+
 	// Process any en-media tags in the content
 	content = enTagReplacer.Replace(content)
 	content = rxMedia.ReplaceAllStringFunc(content, func(tag string) string {
 		attr := parseEnMediaAttr(tag)
-		hash, ok := attr["hash"]
-		if !ok {
-			return `<!-- Error: hash not found -->`
-		}
-		rsc, ok := note.Hash[hash]
-		if !ok {
-			return fmt.Sprintf(`<!-- Error: hash="%s" -->`, hash)
+		rsc, notfound := note.Lookup(attr, noFallback, log)
+		if notfound != "" {
+			return notfound
 		}
 		rscUrl := makeRscUrl(rsc)
 		typ, _, ok := strings.Cut(rsc.Mime, "/")

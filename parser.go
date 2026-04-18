@@ -53,6 +53,7 @@ type Resource struct {
 	Width       int
 	Height      int
 	NewFileName string
+	touch       bool
 }
 
 // WriteTo writes the attachment data from rsc to w.
@@ -96,6 +97,10 @@ func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 				Height:   rsc.Height,
 			}
 			fmt.Fprintln(warn, "Filename:", rsc.FileName)
+			fmt.Fprintln(warn, "SourceUrl:", rsc.SourceUrl)
+			fmt.Fprintln(warn, "Width:", rsc.Width)
+			fmt.Fprintln(warn, "Height:", rsc.Height)
+			fmt.Fprintln(warn, "Mime:", rsc.Mime)
 			if len(rsc.Recognition) > 0 {
 				var recoIndex xmlRecoIndex
 

@@ -2,6 +2,8 @@ Changelog
 =========
 [Top](./README.md) / [English](./CHANGELOG.md) / Japanese
 
+- `<en-media>` の hash 属性で画像リソースを特定できない場合、style 属性に含まれる元画像のサイズ（`--en-naturalWidth` / `--en-naturalHeight`）を用いて一致するリソースを検索するフォールバック機構を追加した（表示用の `width` / `height` 属性ではなく元サイズを使用） (#5, #9, thanks to @fangbb-coder)
+
 v0.5.1
 ------
 Apr 18, 2026

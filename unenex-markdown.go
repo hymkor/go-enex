@@ -34,8 +34,12 @@ func ToMarkdowns(rootDir, enexName string, source []byte, htmlToMarkdown func(io
 		fmt.Fprintf(index, "# %s\n\n", enexName)
 	}
 
+	opt := &Option{
+		Log: wLog,
+	}
+
 	for _, note := range exports {
-		html, bundle := note.Extract(nil)
+		html, bundle := note.Extract(opt)
 		safeName := bundle.BaseName
 
 		fmt.Fprintf(index, "* [%s](%s)\n",
