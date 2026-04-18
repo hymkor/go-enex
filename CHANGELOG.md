@@ -2,6 +2,10 @@ Changelog
 =========
 [Top](./README.md) / English / [Japanese](./CHANGELOG_ja.md)
 
+v0.5.1
+------
+Apr 18, 2026
+
 - Convert HTML entities (e.g. `&nbsp;`) that are invalid in XML into numeric character references (e.g. `&#160;`) to avoid parsing errors. (#6, #7, thanks to @vincentwskuo)
 
 v0.5.0

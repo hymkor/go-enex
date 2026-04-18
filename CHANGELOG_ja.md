@@ -2,6 +2,10 @@ Changelog
 =========
 [Top](./README.md) / [English](./CHANGELOG.md) / Japanese
 
+v0.5.1
+------
+Apr 18, 2026
+
 - `&nbsp;` など、XMLでは未定義のHTMLエンティティがエラーにならないよう、`&#160;` のような数値参照に変換して扱うようにした。 (#6, #7, thanks to @vincentwskuo)
 
 v0.5.0
