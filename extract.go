@@ -1,7 +1,6 @@
 package enex
 
 import (
-	"encoding/xml"
 	"fmt"
 	"path"
 	"regexp"
@@ -124,7 +123,7 @@ func (note *Note) extract(makeRscUrl func(*Resource) string, opt *Option) string
 
 	// Parse the content as XML to extract just the inner content
 	var enNote xmlEnNote
-	if err := xml.Unmarshal([]byte(content), &enNote); err == nil {
+	if err := xmlUnmarshal([]byte(content), &enNote); err == nil {
 		content = enNote.Text
 	}
 
