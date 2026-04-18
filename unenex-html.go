@@ -22,7 +22,7 @@ const indexHtmlFooter = "</body></html>"
 func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, webClipOnly bool, wDebug, wLog io.Writer) error {
 	exports, err := Parse(source, wDebug)
 	if err != nil {
-		return err
+		return stackTrace(err, "ToHtmls")
 	}
 	err = makeDir(rootDir, enexName, wLog)
 	if err != nil {
@@ -65,7 +65,7 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, webClip
 		fmt.Fprintln(wLog, "Create File:", fname)
 
 		if err := bundle.Extract(rootDir, wLog); err != nil {
-			return err
+			return stackTrace(err, "ToHtmls")
 		}
 	}
 	return nil
@@ -95,7 +95,7 @@ func FilesToHtmls(rootDir, styleSheet string, enexFiles []string, webClipOnly bo
 		}
 		enexName := getEnexBaseName(enexFileName)
 		if err := ToHtmls(rootDir, enexName, data, styleSheet, webClipOnly, wDebug, wLog); err != nil {
-			return err
+			return stackTrace(err, "FilesToHtmls")
 		}
 		fmt.Fprintf(wIndex, "<li><a href=\"%s/index.html\">%s</a></li>\n",
 			url.PathEscape(enexName), enexName)

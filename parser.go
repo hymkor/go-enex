@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/url"
-
 	"strings"
 )
 
@@ -80,9 +79,9 @@ type Note struct {
 // Logs are written to the provided warn writer.
 func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 	var theXml xmlEnExport
-	err := xml.Unmarshal(data, &theXml)
+	err := xmlUnmarshal(data, &theXml)
 	if err != nil {
-		return nil, err
+		return nil, stackTrace(err, "Parse: xml.Unmarshal", string(data))
 	}
 	notes := make([]*Note, 0, len(theXml.Note))
 	for _, note := range theXml.Note {
@@ -100,7 +99,7 @@ func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 			if len(rsc.Recognition) > 0 {
 				var recoIndex xmlRecoIndex
 
-				err = xml.Unmarshal(rsc.Recognition, &recoIndex)
+				err = xmlUnmarshal(rsc.Recognition, &recoIndex)
 				if err == nil && recoIndex.ObjID != "" {
 					fmt.Fprintln(warn, "objID:", recoIndex.ObjID)
 					r.Hash = recoIndex.ObjID
@@ -125,8 +124,8 @@ func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 			resource[rsc.FileName] = append(resource[rsc.FileName], r)
 		}
 		var enNote xmlEnNote
-		if err := xml.Unmarshal(note.Content, &enNote); err != nil {
-			return nil, err
+		if err := xmlUnmarshal(note.Content, &enNote); err != nil {
+			return nil, stackTrace(err, "Parse: xml.Unmarshal:", string(note.Content))
 		}
 		notes = append(notes, &Note{
 			Title:    note.Title,

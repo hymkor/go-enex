@@ -2,6 +2,8 @@ github.com/mattn/go-runewidth v0.0.8 h1:3tS41NlGYSmhhe/8fhGRzc+z3AYCw1Fe1WAyLuuj
 github.com/mattn/go-runewidth v0.0.8/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/mattn/godown v0.0.1 h1:39uk50ufLVQFs0eapIJVX5fCS74a1Fs2g5f1MVqIHdE=
 github.com/mattn/godown v0.0.1/go.mod h1:/ivCKurgV/bx6yqtP/Jtc2Xmrv3beCYBvlfAUl4X5g4=
+github.com/nyaosorg/go-windows-dbg v0.0.0-20240724174901-9645d9b1df23 h1:PsACS2RhmWIsc39eiIQ4EeEww+OFT0gn60TG0MFObrg=
+github.com/nyaosorg/go-windows-dbg v0.0.0-20240724174901-9645d9b1df23/go.mod h1:2KBQW9Jv7m6jB8WDgvZOVsJXwtbk4MRIpOWt/n/EDwg=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20200202094626-16171245cfb2 h1:CCH4IOTTfewWjGOlSp+zGcjutRKlBEZQ6wTn8ozI/nI=
 golang.org/x/net v0.0.0-20200202094626-16171245cfb2/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=

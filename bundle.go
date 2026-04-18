@@ -59,7 +59,7 @@ func (B *Bundle) Extract(rootDir string, log io.Writer) error {
 		}
 		data, err := data.Data()
 		if err != nil {
-			return err
+			return stackTrace(err, "(*Bundle) Extract")
 		}
 		if err := os.WriteFile(fname, data, 0644); err != nil {
 			return err

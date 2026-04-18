@@ -2,7 +2,10 @@ module github.com/hymkor/go-enex
 
 go 1.18
 
-require github.com/mattn/godown v0.0.1
+require (
+	github.com/mattn/godown v0.0.1
+	github.com/nyaosorg/go-windows-dbg v0.0.0-20240724174901-9645d9b1df23
+)
 
 require (
 	github.com/mattn/go-runewidth v0.0.8 // indirect

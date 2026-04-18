@@ -14,13 +14,14 @@ VERSION=$(shell git describe --tags 2>$(NUL) || echo v0.0.0)
 GOOPT=-ldflags "-s -w -X main.version=$(VERSION)"
 EXT=$(shell go env GOEXE)
 
-all:
+debug:
 	go fmt ./...
-	$(SET) "CGO_ENABLED=0" && go build $(GOOPT)
-	$(foreach I,$(wildcard cmd/*),$(SET) "CGO_ENABLED=0" && go build -C $(I) -o $(CURDIR) $(GOOPT) && ) echo OK
+	$(SET) "CGO_ENABLED=0" && go build $(GOOPT) -tags debug ./cmd/unenex
+	$(SET) "CGO_ENABLED=0" && go build $(GOOPT) -tags debug ./cmd/exstyle
 
 _dist:
-	$(MAKE) all
+	$(SET) "CGO_ENABLED=0" && go build $(GOOPT) ./cmd/unenex
+	$(SET) "CGO_ENABLED=0" && go build $(GOOPT) ./cmd/exstyle
 	zip $(NAME)-$(VERSION)-$(GOOS)-$(GOARCH).zip unenex$(EXT) exstyle$(EXT)
 
 dist:
