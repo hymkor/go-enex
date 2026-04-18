@@ -2,6 +2,8 @@ Changelog
 =========
 [Top](./README.md) / English / [Japanese](./CHANGELOG_ja.md)
 
+- Add a fallback mechanism to resolve image resources when the `<en-media>` hash cannot be matched, by using the original image dimensions (`--en-naturalWidth` / `--en-naturalHeight`) found in the `style` attribute (instead of the `width` / `height` display attributes). (#5, #9, thanks to @fangbb-coder)
+
 v0.5.1
 ------
 Apr 18, 2026
