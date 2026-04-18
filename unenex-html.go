@@ -48,6 +48,7 @@ func ToHtmls(rootDir, enexName string, source []byte, styleSheet string, webClip
 	opt := &Option{
 		ExHeader:    styleSheet,
 		WebClipOnly: webClipOnly,
+		Log:         wLog,
 	}
 
 	for _, note := range exports {
