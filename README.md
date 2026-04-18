@@ -126,6 +126,7 @@ Acknowledgements
 - [Laetgark](https://github.com/Laetgark)
 - [Juelicher-Trainee](https://github.com/Juelicher-Trainee)
 - [mikaeloduh (Michael D)](https://github.com/mikaeloduh)
+- [fangbb-coder](https://github.com/fangbb-coder)
 - [vincentwskuo](https://github.com/vincentwskuo)
 
 Author
