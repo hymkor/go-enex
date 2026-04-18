@@ -123,13 +123,10 @@ Changelog
 Acknowledgements
 ---------------
 
-- [Laetgark](https://github.com/Laetgark) - [#1]
-- [Juelicher-Trainee](https://github.com/Juelicher-Trainee) - [#2]
-- [mikaeloduh (Michael D)](https://github.com/mikaeloduh) - [#3]
-
-[#1]: https://github.com/hymkor/go-enex/issues/1
-[#2]: https://github.com/hymkor/go-enex/issues/2
-[#3]: https://github.com/hymkor/go-enex/pull/3
+- [Laetgark](https://github.com/Laetgark)
+- [Juelicher-Trainee](https://github.com/Juelicher-Trainee)
+- [mikaeloduh (Michael D)](https://github.com/mikaeloduh)
+- [vincentwskuo](https://github.com/vincentwskuo)
 
 Author
 ------
