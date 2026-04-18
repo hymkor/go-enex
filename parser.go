@@ -82,7 +82,7 @@ func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 	var theXml xmlEnExport
 	err := xml.Unmarshal(data, &theXml)
 	if err != nil {
-		return nil, err
+		return nil, stackTrace(err, "Parse: xml.Unmarshal", string(data))
 	}
 	notes := make([]*Note, 0, len(theXml.Note))
 	for _, note := range theXml.Note {
@@ -126,7 +126,7 @@ func Parse(data []byte, warn io.Writer) ([]*Note, error) {
 		}
 		var enNote xmlEnNote
 		if err := xml.Unmarshal(note.Content, &enNote); err != nil {
-			return nil, err
+			return nil, stackTrace(err, "Parse: xml.Unmarshal:", string(note.Content))
 		}
 		notes = append(notes, &Note{
 			Title:    note.Title,
